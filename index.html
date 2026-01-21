@@ -1,0 +1,982 @@
+
+<html lang="en">
+  <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>📚 IB Physics HL Dictionary</title>
+  <style>
+          * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+          }
+          
+          body {
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+              line-height: 1.6;
+              color: #333;
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              min-height: 100vh;
+              padding: 20px;
+          }
+          
+          .container {
+              max-width: 1200px;
+              margin: 0 auto;
+              background: white;
+              border-radius: 15px;
+              box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+              overflow: hidden;
+          }
+          
+          header {
+              background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+              color: white;
+              padding: 40px;
+              text-align: center;
+          }
+          
+          header h1 {
+              font-size: 2.5em;
+              margin-bottom: 10px;
+              text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+          }
+          
+          header p {
+              font-size: 1.1em;
+              opacity: 0.9;
+          }
+          
+          .search-box {
+              padding: 20px 40px;
+              background: #f8f9fa;
+              border-bottom: 2px solid #e9ecef;
+          }
+          
+          #searchInput {
+              width: 100%;
+              padding: 15px 20px;
+              font-size: 16px;
+              border: 2px solid #dee2e6;
+              border-radius: 50px;
+              outline: none;
+              transition: all 0.3s;
+          }
+          
+          #searchInput:focus {
+              border-color: #667eea;
+              box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+          }
+          
+          .alphabet-nav {
+              padding: 15px 40px;
+              background: #f8f9fa;
+              border-bottom: 2px solid #e9ecef;
+              display: flex;
+              flex-wrap: wrap;
+              gap: 10px;
+              justify-content: center;
+          }
+          
+          .alphabet-nav a {
+              display: inline-block;
+              width: 35px;
+              height: 35px;
+              line-height: 35px;
+              text-align: center;
+              background: white;
+              color: #667eea;
+              text-decoration: none;
+              border-radius: 50%;
+              font-weight: bold;
+              transition: all 0.3s;
+              border: 2px solid #e9ecef;
+          }
+          
+          .alphabet-nav a:hover {
+              background: #667eea;
+              color: white;
+              transform: scale(1.1);
+          }
+          
+          .content {
+              padding: 40px;
+          }
+          
+          .term-entry {
+              margin-bottom: 30px;
+              padding: 25px;
+              background: #f8f9fa;
+              border-radius: 10px;
+              border-left: 4px solid #667eea;
+              transition: all 0.3s;
+          }
+          
+          .term-entry.hl-term {
+              border-left-color: #e74c3c;
+              background: #fff5f5;
+          }
+          
+          .term-entry:hover {
+              box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+              transform: translateX(5px);
+          }
+          
+          .term-entry:target {
+              background: #e7f3ff;
+              border-left-color: #2a5298;
+              animation: highlight 1s ease;
+          }
+          
+          @keyframes highlight {
+              0% { background: #ffd700; }
+              100% { background: #e7f3ff; }
+          }
+          
+          .term-title {
+              font-size: 1.4em;
+              color: #1e3c72;
+              margin-bottom: 8px;
+              font-weight: 600;
+              display: flex;
+              align-items: baseline;
+              flex-wrap: wrap;
+              gap: 8px;
+          }
+          
+          .term-name {
+              font-weight: 700;
+          }
+          
+          .term-symbol {
+              font-style: italic;
+              color: #667eea;
+              font-weight: 500;
+          }
+          
+          .term-unit {
+              color: #6c757d;
+              font-weight: 400;
+              font-size: 0.9em;
+          }
+          
+          .hl-badge {
+              display: inline-block;
+              background: #e74c3c;
+              color: white;
+              padding: 2px 8px;
+              border-radius: 4px;
+              font-size: 0.7em;
+              font-weight: 700;
+              letter-spacing: 0.5px;
+          }
+          
+          .term-definition {
+              font-size: 1.05em;
+              line-height: 1.8;
+              color: #495057;
+              margin-bottom: 12px;
+          }
+          
+          .term-enhancement {
+              font-size: 0.95em;
+              color: #6c757d;
+              padding-top: 10px;
+              border-top: 1px dashed #dee2e6;
+              font-style: italic;
+          }
+          
+          .term-link {
+              color: #667eea;
+              text-decoration: none;
+              font-weight: 500;
+              border-bottom: 1px dotted #667eea;
+              transition: all 0.2s;
+              padding: 0 2px;
+          }
+          
+          .term-link:hover {
+              color: #2a5298;
+              border-bottom-style: solid;
+              background: rgba(102, 126, 234, 0.1);
+              border-radius: 3px;
+          }
+          
+          .letter-header {
+              font-size: 2.5em;
+              color: #667eea;
+              margin: 40px 0 20px 0;
+              padding-bottom: 10px;
+              border-bottom: 3px solid #667eea;
+              font-weight: 700;
+          }
+          
+          .letter-header:first-of-type {
+              margin-top: 0;
+          }
+          
+          .back-to-top {
+              position: fixed;
+              bottom: 30px;
+              right: 30px;
+              background: #667eea;
+              color: white;
+              width: 50px;
+              height: 50px;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              text-decoration: none;
+              font-size: 24px;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+              transition: all 0.3s;
+              opacity: 0;
+              pointer-events: none;
+          }
+          
+          .back-to-top.visible {
+              opacity: 1;
+              pointer-events: all;
+          }
+          
+          .back-to-top:hover {
+              background: #2a5298;
+              transform: translateY(-5px);
+              box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+          }
+          
+          .stats {
+              text-align: center;
+              padding: 20px;
+              background: #e7f3ff;
+              margin-bottom: 20px;
+              border-radius: 10px;
+              font-size: 1.05em;
+              color: #1e3c72;
+              display: flex;
+              justify-content: center;
+              gap: 30px;
+              flex-wrap: wrap;
+          }
+          
+          .stat-item {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+          }
+          
+          .stat-number {
+              font-weight: 700;
+              font-size: 1.3em;
+              color: #667eea;
+          }
+          
+          .hidden {
+              display: none !important;
+          }
+          
+          @media (max-width: 768px) {
+              body {
+                  padding: 0;
+              }
+              
+              .container {
+                  border-radius: 0;
+              }
+              
+              header h1 {
+                  font-size: 1.8em;
+              }
+              
+              .content {
+                  padding: 20px;
+              }
+              
+              .search-box, .alphabet-nav {
+                  padding: 15px 20px;
+              }
+              
+              .term-entry {
+                  padding: 15px;
+              }
+              
+              .stats {
+                  flex-direction: column;
+                  gap: 10px;
+              }
+          }
+      
+  
+  .term-entry.hl-ext{border-left-color:#8e44ad;background:#fbf5ff;}
+  .hlx-badge{background:#8e44ad;}
+  </style>
+  </head>
+  <body>
+  <div class="container">
+  <header id="top">
+  <h1>📚 IB Physics HL Dictionary</h1>
+  <p>HL core terms + HL extension (cross-linked to master glossary)</p>
+  </header>
+  <div class="search-box">
+  <input id="searchInput" placeholder="🔍 Search for a term, symbol, or definition..." type="text"/>
+  </div>
+  <div class="alphabet-nav">
+  <a href="#letter-A">A</a>
+  <a href="#letter-B">B</a>
+  <a href="#letter-C">C</a>
+  <a href="#letter-D">D</a>
+  <a href="#letter-E">E</a>
+  <a href="#letter-F">F</a>
+  <a href="#letter-G">G</a>
+  <a href="#letter-H">H</a>
+  <a href="#letter-I">I</a>
+  <a href="#letter-J">J</a>
+  <a href="#letter-K">K</a>
+  <a href="#letter-L">L</a>
+  <a href="#letter-M">M</a>
+  <a href="#letter-N">N</a>
+  <a href="#letter-O">O</a>
+  <a href="#letter-P">P</a>
+  <a href="#letter-Q">Q</a>
+  <a href="#letter-R">R</a>
+  <a href="#letter-S">S</a>
+  <a href="#letter-T">T</a>
+  <a href="#letter-U">U</a>
+  <a href="#letter-V">V</a>
+  <a href="#letter-W">W</a>
+  <a href="#letter-X">X</a>
+  <a href="#letter-Y">Y</a>
+  <a href="#letter-Z">Z</a>
+  </div>
+  <div class="content">
+  <div class="stats">
+  <div class="stat-item">
+  <span class="stat-number">60</span>
+  <span>Total Terms</span>
+  </div>
+  <div class="stat-item">
+  <span class="stat-number">60</span>
+  <span>HL Topics</span>
+  </div>
+  <div class="stat-item">
+  <span class="stat-number">~1000</span>
+  <span>Cross-references</span>
+  </div>
+  </div><div class="letter-header" id="hl-extension">HL Extension</div><div class="term-entry hl-term hl-ext" data-term="invariant" id="hlx-invariant"><div class="term-title"><span class="term-name">Invariant</span><span class="term-unit">[dimensionless]</span><span class="hl-badge hlx-badge">HL EXT</span></div><div class="term-definition">A quantity that has the same value for all observers under a specified transformation (e.g., the <em>space–time interval</em> is invariant under Lorentz transformations).</div><div class="term-enhancement"><strong>Builds on SL:</strong> <a class="term-link" href="physicsDictionary.html">Master glossary</a>.</div></div><div class="term-entry hl-term hl-ext" data-term="symmetry" id="hlx-symmetry"><div class="term-title"><span class="term-name">Symmetry</span><span class="hl-badge hlx-badge">HL EXT</span></div><div class="term-definition">A property of a system or law that remains unchanged under a transformation (translation, rotation, time shift). In physics, symmetries often imply <em>conservation laws</em>.</div><div class="term-enhancement"><strong>Builds on SL:</strong> <a class="term-link" href="physicsDictionary.html">Master glossary</a>.</div></div><div class="term-entry hl-term hl-ext" data-term="linearisation" id="hlx-linearisation"><div class="term-title"><span class="term-name">Linearisation</span><span class="hl-badge hlx-badge">HL EXT</span></div><div class="term-definition">Rewriting a relationship into a straight‑line form (e.g., <em>log–log</em> or <em>semi‑log</em>) so gradients/intercepts can be used to determine constants and exponents.</div><div class="term-enhancement"><strong>Builds on SL:</strong> <a class="term-link" href="physicsDictionary.html">Master glossary</a>.</div></div><div class="term-entry hl-term hl-ext" data-term="validity domain" id="hlx-validity-domain"><div class="term-title"><span class="term-name">Validity Domain</span><span class="hl-badge hlx-badge">HL EXT</span></div><div class="term-definition">The range of conditions in which a model or equation is expected to hold (e.g., Galilean velocity addition is valid when <em>v ≪ c</em>).</div><div class="term-enhancement"><strong>Builds on SL:</strong> <a class="term-link" href="physicsDictionary.html">Master glossary</a>.</div></div><div class="term-entry hl-term hl-ext" data-term="limiting case" id="hlx-limiting-case"><div class="term-title"><span class="term-name">Limiting Case</span><span class="hl-badge hlx-badge">HL EXT</span></div><div class="term-definition">A simplified extreme of a model (e.g., small‑angle approximation; or relativistic equations reducing to Newtonian forms when <em>v ≪ c</em>) used to check consistency.</div><div class="term-enhancement"><strong>Builds on SL:</strong> <a class="term-link" href="physicsDictionary.html">Master glossary</a>.</div></div><div class="term-entry hl-term hl-ext" data-term="expectation value" id="hlx-expectation-value"><div class="term-title"><span class="term-name">Expectation Value</span><span class="term-symbol">⟨x⟩</span><span class="hl-badge hlx-badge">HL EXT</span></div><div class="term-definition">The mean value predicted by a probability distribution. In quantum contexts, it is the average outcome of many measurements of an observable.</div><div class="term-enhancement"><strong>Builds on SL:</strong> <a class="term-link" href="physicsDictionary.html">Master glossary</a>.</div></div>
+  <div class="letter-header" id="letter-A">A</div>
+  
+  
+  <div class="term-entry hl-term" data-term="absorbed dose (d)" id="absorbed-dose-d">
+  <div class="term-title"><span class="term-name">Absorbed Dose (D)</span> <span class="term-symbol">D</span> <span class="term-unit">[Gy or J kg⁻¹]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">Total <a class="term-link" href="physicsDictionary.html#energy">energy</a> absorbed per unit <a class="term-link" href="physicsDictionary.html#mass">mass</a> of tissue.</div>
+  </div>
+  
+  
+  
+  <div class="term-entry hl-term" data-term="acoustic impedance (z)" id="acoustic-impedance-z">
+  <div class="term-title"><span class="term-name">Acoustic Impedance (Z)</span> <span class="term-symbol">Z</span> <span class="term-unit">[kg m⁻² s⁻¹]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">The product of the density of a substance and the <a class="term-link" href="physicsDictionary.html#speed-uv">speed</a> of sound in that substance.</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="term-entry hl-term" data-term="angular acceleration" id="angular-acceleration">
+  <div class="term-title"><span class="term-name">Angular Acceleration</span> <span class="term-symbol">α</span> <span class="term-unit">[rad s⁻²]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">The rate of change of angular <a class="term-link" href="physicsDictionary.html#velocity-uv">velocity</a>. Analogous to linear <a class="term-link" href="physicsDictionary.html#acceleration-a">acceleration</a> in rotational <a class="term-link" href="physicsDictionary.html#motion">motion</a>.</div>
+  <div class="term-enhancement"><strong>See also:</strong> <a class="term-link" href="physicsDictionary.html#angular-speed">Angular Speed</a>, <a class="term-link" href="physicsDictionary.html#torque">Torque</a>.</div>
+  </div>
+  <div class="term-entry hl-term" data-term="angular momentum" id="angular-momentum">
+  <div class="term-title"><span class="term-name">Angular Momentum</span> <span class="term-symbol">L</span> <span class="term-unit">[kg m² s⁻¹]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">The rotational equivalent of <a class="term-link" href="physicsDictionary.html#linear-momentum-p">linear momentum</a>. For a rotating object, it is the product of moment of <a class="term-link" href="physicsDictionary.html#inertia">inertia</a> and angular <a class="term-link" href="physicsDictionary.html#velocity-uv">velocity</a> (L = Iω).</div>
+  <div class="term-enhancement"><strong>See also:</strong> <a class="term-link" href="physicsDictionary.html#angular-speed">Angular Speed</a>, <a class="term-link" href="physicsDictionary.html#torque">Torque</a>, <a class="term-link" href="physicsDictionary.html#conservation-of-angular-momentum">Conservation of Angular Momentum</a>.</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="letter-header" id="letter-B">B</div>
+  
+  
+  
+  
+  
+  
+  <div class="term-entry hl-term" data-term="biological half-life (tb)" id="biological-half-life-tb">
+  <div class="term-title"><span class="term-name">Biological Half-life (TB)</span> <span class="term-symbol">TB</span> <span class="term-unit">[s]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition"><a class="term-link" href="physicsDictionary.html#time">Time</a> taken for half the number of ingested radioactive nuclei in the body to be removed by natural bodily (chemical) processes.</div>
+  </div>
+  
+  <div class="term-entry hl-term" data-term="black holes" id="black-holes">
+  <div class="term-title"><span class="term-name">Black Holes</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">A region of <a class="term-link" href="physicsDictionary.html#spacetime">spacetime</a> with extreme curvature due to the presence of a <a class="term-link" href="physicsDictionary.html#mass">mass</a>.</div>
+  </div>
+  
+  
+  
+  
+  
+  <div class="letter-header" id="letter-C">C</div>
+  
+  <div class="term-entry hl-term" data-term="carbon-oxygen burning" id="carbon-oxygen-burning">
+  <div class="term-title"><span class="term-name">Carbon-Oxygen Burning</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">Advanced <a class="term-link" href="physicsDictionary.html#nuclear-fusion">nuclear fusion</a> stage in massive stars where carbon and oxygen nuclei fuse to create heavier elements like neon, magnesium, and silicon.</div>
+  <div class="term-enhancement"><strong>See also:</strong> <a class="term-link" href="physicsDictionary.html#helium-burning">Helium Burning</a>, <a class="term-link" href="physicsDictionary.html#nuclear-fusion">Nuclear Fusion</a>.</div>
+  </div>
+  
+  <div class="term-entry hl-term" data-term="center of a black hole (singularity)" id="center-of-a-black-hole-singularity">
+  <div class="term-title"><span class="term-name">Center of a Black Hole (singularity)</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">The single point to which all <a class="term-link" href="physicsDictionary.html#mass">mass</a> would collapse.</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  <div class="term-entry hl-term" data-term="conservation of angular momentum" id="conservation-of-angular-momentum">
+  <div class="term-title"><span class="term-name">Conservation of Angular Momentum</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">In the absence of external <a class="term-link" href="physicsDictionary.html#torque">torques</a>, the total <a class="term-link" href="physicsDictionary.html#angular-momentum">angular momentum</a> of a <a class="term-link" href="physicsDictionary.html#system">system</a> remains constant.</div>
+  <div class="term-enhancement"><strong>See also:</strong> <a class="term-link" href="physicsDictionary.html#angular-momentum">Angular Momentum</a>, <a class="term-link" href="physicsDictionary.html#torque">Torque</a>.</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  <div class="term-entry hl-term" data-term="couple" id="couple">
+  <div class="term-title"><span class="term-name">Couple</span> <span class="term-unit">[N m]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">A pair of equal and opposite parallel <a class="term-link" href="physicsDictionary.html#force">forces</a> that tend to cause rotation only. The net <a class="term-link" href="physicsDictionary.html#force">force</a> is zero, but the net <a class="term-link" href="physicsDictionary.html#torque">torque</a> is non-zero.</div>
+  <div class="term-enhancement"><strong>See also:</strong> <a class="term-link" href="physicsDictionary.html#torque">Torque</a>, <a class="term-link" href="physicsDictionary.html#turning-moment">Turning Moment</a>, <a class="term-link" href="physicsDictionary.html#force">Force</a>.</div>
+  </div>
+  
+  
+  <div class="term-entry hl-term" data-term="critical density" id="critical-density">
+  <div class="term-title"><span class="term-name">Critical Density</span> <span class="term-symbol">ρc</span> <span class="term-unit">[kg m⁻³]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">The average density of matter in the universe required for it to eventually stop expanding and begin to contract. Determines the ultimate fate of the universe.</div>
+  </div>
+  
+  <div class="letter-header" id="letter-D">D</div>
+  
+  <div class="term-entry hl-term" data-term="davisson-germer experiment" id="davisson-germer-experiment">
+  <div class="term-title"><span class="term-name">Davisson-Germer Experiment</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">An experiment showing that <a class="term-link" href="physicsDictionary.html#electron">electrons</a> are scattered off crystals of nickel and interfere with each other – also known as '<a class="term-link" href="physicsDictionary.html#electron">electron</a> <a class="term-link" href="physicsDictionary.html#diffraction">diffraction</a>.' This experiment is evidence for the existence of <a class="term-link" href="physicsDictionary.html#matter-waves">matter waves</a>.</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="term-entry hl-term" data-term="dose equivalent (h)" id="dose-equivalent-h">
+  <div class="term-title"><span class="term-name">Dose Equivalent (H)</span> <span class="term-symbol">H</span> <span class="term-unit">[Sv]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">Product of quality factor and <a class="term-link" href="physicsDictionary.html#absorbed-dose-d">absorbed dose</a> which is an attempt to measure the <a class="term-link" href="physicsDictionary.html#radiation">radiation</a> damage that actually occurs in tissues.</div>
+  </div>
+  <div class="letter-header" id="letter-E">E</div>
+  <div class="term-entry hl-term" data-term="effective half-life (te)" id="effective-half-life-te">
+  <div class="term-title"><span class="term-name">Effective Half-life (TE)</span> <span class="term-symbol">TE</span> <span class="term-unit">[s]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition"><a class="term-link" href="physicsDictionary.html#time">Time</a> taken for the number of radioactive nuclei present in the body to halve.</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="term-entry hl-term" data-term="electron in a box model" id="electron-in-a-box-model">
+  <div class="term-title"><span class="term-name">Electron in a Box Model</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">A model of the <a class="term-link" href="physicsDictionary.html#atom">atom</a> useful for explaining the origin of atomic <a class="term-link" href="physicsDictionary.html#energy">energy</a> levels: The model assumes that, if an <a class="term-link" href="physicsDictionary.html#electron">electron</a> is confined to move in one dimension by a box, the de Broglie <a class="term-link" href="physicsDictionary.html#wave">waves</a> associated with the <a class="term-link" href="physicsDictionary.html#electron">electron</a> will be standing <a class="term-link" href="physicsDictionary.html#wave">waves</a> of <a class="term-link" href="physicsDictionary.html#wavelength-λ">wavelength</a> 2L/n where L is the length of the box and n is a positive integer. Further, the <a class="term-link" href="physicsDictionary.html#kinetic-energy-ek">kinetic energy</a> of the <a class="term-link" href="physicsDictionary.html#electron">electron</a> in the box is n²h²/(8meL²).</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="term-entry hl-term" data-term="exposure (x)" id="exposure-x">
+  <div class="term-title"><span class="term-name">Exposure (X)</span> <span class="term-symbol">X</span> <span class="term-unit">[C kg⁻¹]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">Measure of the total amount of ionization produced which is the ratio of total <a class="term-link" href="physicsDictionary.html#charge">charge</a> to <a class="term-link" href="physicsDictionary.html#mass">mass</a> of air.</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="letter-header" id="letter-G">G</div>
+  
+  <div class="term-entry hl-term" data-term="galilean transformation" id="galilean-transformation">
+  <div class="term-title"><span class="term-name">Galilean Transformation</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">Equations that translate measurements made in one <a class="term-link" href="physicsDictionary.html#frame-of-reference">frame of reference</a> to another <a class="term-link" href="physicsDictionary.html#frame-of-reference">frame of reference</a> without taking into account the theory of relativity.</div>
+  </div>
+  
+  
+  
+  
+  
+  <div class="term-entry hl-term" data-term="gravitational mass" id="gravitational-mass">
+  <div class="term-title"><span class="term-name">Gravitational Mass</span> <span class="term-symbol">mg</span> <span class="term-unit">[kg]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">The property of an object that determines how much gravitational <a class="term-link" href="physicsDictionary.html#force">force</a> it feels when near another object. Different gravitational masses have different gravitational <a class="term-link" href="physicsDictionary.html#force">forces</a> acting between them.</div>
+  </div>
+  
+  
+  <div class="term-entry hl-term" data-term="gravitational red shift" id="gravitational-red-shift">
+  <div class="term-title"><span class="term-name">Gravitational Red Shift</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">A prediction of the general theory relativity in which clocks slow down in a gravitational <a class="term-link" href="physicsDictionary.html#field">field</a> (that is, clocks on the ground floor of a building will run slowly as compared with clocks on the top floor).</div>
+  </div>
+  
+  <div class="letter-header" id="letter-H">H</div>
+  <div class="term-entry hl-term" data-term="hafele-keating experiment" id="hafele-keating-experiment">
+  <div class="term-title"><span class="term-name">Hafele-Keating Experiment</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">A 1971 test of the predictions of <a class="term-link" href="physicsDictionary.html#time-dilation">time dilation</a> in which atomic clocks were put in aircraft and flown, east and west, around the world and then compared with clocks that remained fixed in the same location on Earth.</div>
+  </div>
+  <div class="term-entry hl-term" data-term="half-value thickness (x₁/₂)" id="half-value-thickness-x₁₂">
+  <div class="term-title"><span class="term-name">Half-Value Thickness (x₁/₂)</span> <span class="term-symbol">x₁/₂</span> <span class="term-unit">[m]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">The thickness of a material needed for a beam (of X-<a class="term-link" href="physicsDictionary.html#ray">rays</a>) to be attenuated (reduced) in <a class="term-link" href="physicsDictionary.html#intensity-i">intensity</a> by 50%.</div>
+  </div>
+  
+  <div class="term-entry hl-term" data-term="heisenberg uncertainty principle" id="heisenberg-uncertainty-principle">
+  <div class="term-title"><span class="term-name">Heisenberg Uncertainty Principle</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">Conjugate quantities (position-momentum or <a class="term-link" href="physicsDictionary.html#time">time</a>-<a class="term-link" href="physicsDictionary.html#energy">energy</a>) cannot be known precisely at the same <a class="term-link" href="physicsDictionary.html#time">time</a>. There is a link between the uncertainty principle and the <a class="term-link" href="physicsDictionary.html#de-broglie-hypothesis">de Broglie hypothesis</a>.</div>
+  </div>
+  <div class="term-entry hl-term" data-term="helium burning" id="helium-burning">
+  <div class="term-title"><span class="term-name">Helium Burning</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition"><a class="term-link" href="physicsDictionary.html#nuclear-fusion">Nuclear fusion</a> process in which helium nuclei combine to form heavier elements, primarily carbon. Occurs in the core of stars after hydrogen is exhausted.</div>
+  <div class="term-enhancement"><strong>See also:</strong> <a class="term-link" href="physicsDictionary.html#nuclear-fusion">Nuclear Fusion</a>, <a class="term-link" href="physicsDictionary.html#red-giant">Red Giant</a>, <a class="term-link" href="physicsDictionary.html#carbon-oxygen-burning">Carbon-Oxygen Burning</a>.</div>
+  </div>
+  <div class="term-entry hl-term" data-term="hertzsprung-russell diagram" id="hertzsprung-russell-diagram">
+  <div class="term-title"><span class="term-name">Hertzsprung-Russell Diagram</span> <span class="term-symbol">H-R Diagram</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">A scatter plot of stars showing the relationship between their <a class="term-link" href="physicsDictionary.html#absolute-magnitude">absolute magnitudes</a> (or luminosities) and spectral types (or <a class="term-link" href="physicsDictionary.html#temperature-t">temperatures</a>). Used to understand stellar evolution.</div>
+  <div class="term-enhancement"><strong>See also:</strong> <a class="term-link" href="physicsDictionary.html#luminosity">Luminosity</a>, <a class="term-link" href="physicsDictionary.html#absolute-magnitude">Absolute Magnitude</a>, <a class="term-link" href="physicsDictionary.html#red-giant">Red Giant</a>, <a class="term-link" href="physicsDictionary.html#white-dwarf">White Dwarf</a>, <a class="term-link" href="physicsDictionary.html#blue-giant">Blue Giant</a>.</div>
+  </div>
+  <div class="letter-header" id="letter-I">I</div>
+  
+  
+  
+  
+  
+  
+  <div class="term-entry hl-term" data-term="inertial frame of reference" id="inertial-frame-of-reference">
+  <div class="term-title"><span class="term-name">Inertial Frame of Reference</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">A <a class="term-link" href="physicsDictionary.html#frame-of-reference">frame of reference</a> that is not accelerating but is at rest or moving with a constant <a class="term-link" href="physicsDictionary.html#velocity-uv">velocity</a>. OR A <a class="term-link" href="physicsDictionary.html#frame-of-reference">frame of reference</a> in which Newton's law of <a class="term-link" href="physicsDictionary.html#inertia">inertia</a> is valid.</div>
+  </div>
+  <div class="term-entry hl-term" data-term="inertial mass" id="inertial-mass">
+  <div class="term-title"><span class="term-name">Inertial Mass</span> <span class="term-symbol">mi</span> <span class="term-unit">[kg]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">The property of an object that determines how much it accelerates when a given <a class="term-link" href="physicsDictionary.html#force">force</a> is applied to it. OR The ratio of resultant <a class="term-link" href="physicsDictionary.html#force">force</a> to <a class="term-link" href="physicsDictionary.html#acceleration-a">acceleration</a> of an object.</div>
+  </div>
+  <div class="term-entry hl-term" data-term="inertial mass-energy" id="inertial-mass-energy">
+  <div class="term-title"><span class="term-name">Inertial Mass-Energy</span> <span class="term-symbol">E</span> <span class="term-unit">[J]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">The total <a class="term-link" href="physicsDictionary.html#energy">energy</a> content of an object including its <a class="term-link" href="physicsDictionary.html#rest-mass">rest mass</a> <a class="term-link" href="physicsDictionary.html#energy">energy</a> and <a class="term-link" href="physicsDictionary.html#kinetic-energy-ek">kinetic energy</a>, as described by Einstein's <a class="term-link" href="physicsDictionary.html#mass">mass</a>-<a class="term-link" href="physicsDictionary.html#energy">energy</a> equivalence.</div>
+  <div class="term-enhancement"><strong>See also:</strong> <a class="term-link" href="physicsDictionary.html#rest-mass">Rest Mass</a>, <a class="term-link" href="physicsDictionary.html#kinetic-energy-ek">Kinetic Energy (EK)</a>, <a class="term-link" href="physicsDictionary.html#special-theory-of-relativity">Special Theory of Relativity</a>.</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="letter-header" id="letter-L">L</div>
+  
+  
+  
+  
+  
+  <div class="term-entry hl-term" data-term="length contraction" id="length-contraction">
+  <div class="term-title"><span class="term-name">Length Contraction</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">An effect of relativity in which the separation between two points in space contracts if there is relative <a class="term-link" href="physicsDictionary.html#motion">motion</a> in that direction.</div>
+  <div class="term-enhancement"><strong>See also:</strong> <a class="term-link" href="physicsDictionary.html#special-theory-of-relativity">Special Theory of Relativity</a>, <a class="term-link" href="physicsDictionary.html#proper-length">Proper Length</a>, <a class="term-link" href="physicsDictionary.html#lorentz-factor-γ">Lorentz Factor (γ)</a>.</div>
+  </div>
+  
+  <div class="term-entry hl-term" data-term="light clock" id="light-clock">
+  <div class="term-title"><span class="term-name">Light Clock</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">A beam of light reflected between two parallel mirrors used to measure <a class="term-link" href="physicsDictionary.html#time">time</a>.</div>
+  </div>
+  
+  
+  
+  <div class="term-entry hl-term" data-term="lorentz factor (γ)" id="lorentz-factor-γ">
+  <div class="term-title"><span class="term-name">Lorentz Factor (γ)</span> <span class="term-symbol">γ</span> <span class="term-unit">[dimensionless]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">A relativistic factor that varies from approximately 1 at low velocities to approaching infinity near the <a class="term-link" href="physicsDictionary.html#speed-uv">speed</a> of light.</div>
+  <div class="term-enhancement"><strong>See also:</strong> <a class="term-link" href="physicsDictionary.html#special-theory-of-relativity">Special Theory of Relativity</a>, <a class="term-link" href="physicsDictionary.html#time-dilation">Time Dilation</a>, <a class="term-link" href="physicsDictionary.html#length-contraction">Length Contraction</a>.</div>
+  </div>
+  
+  
+  <div class="letter-header" id="letter-M">M</div>
+  
+  
+  
+  
+  
+  
+  
+  <div class="term-entry hl-term" data-term="matter waves" id="matter-waves">
+  <div class="term-title"><span class="term-name">Matter Waves</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">All moving <a class="term-link" href="physicsDictionary.html#particle">particles</a> have a 'matter <a class="term-link" href="physicsDictionary.html#wave">wave</a>' associated with them whose <a class="term-link" href="physicsDictionary.html#wavelength-λ">wavelength</a> is the de Broglie <a class="term-link" href="physicsDictionary.html#wavelength-λ">wavelength</a>.</div>
+  <div class="term-enhancement"><strong>See also:</strong> <a class="term-link" href="physicsDictionary.html#de-broglie-hypothesis">de Broglie Hypothesis</a>, <a class="term-link" href="physicsDictionary.html#wave-particle-duality">Wave-Particle Duality</a>, <a class="term-link" href="physicsDictionary.html#electron">Electron</a>.</div>
+  </div>
+  
+  <div class="term-entry hl-term" data-term="michelson-morley experiment" id="michelson-morley-experiment">
+  <div class="term-title"><span class="term-name">Michelson-Morley Experiment</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">An experiment comparing the <a class="term-link" href="physicsDictionary.html#speed-uv">speed</a> of light measured in two perpendicular directions using interference patterns. Did not produce any observable difference in the <a class="term-link" href="physicsDictionary.html#speed-uv">speeds</a> – implies that the ether does not exist and that the result is consistent with the constancy of the <a class="term-link" href="physicsDictionary.html#speed-uv">speed</a> of light.</div>
+  </div>
+  
+  <div class="term-entry hl-term" data-term="millikan's stopping potential experiment" id="millikans-stopping-potential-experiment">
+  <div class="term-title"><span class="term-name">Millikan's Stopping Potential Experiment</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">An experiment utilizing reverse voltage raised to such a level (stopping potential Vs) that it stops all emitted photoelectrons. This experiment is used to test the Einstein model of the explaining the <a class="term-link" href="physicsDictionary.html#photoelectric-effect">photoelectric effect</a>.</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  <div class="term-entry hl-term" data-term="muon decay experiment" id="muon-decay-experiment">
+  <div class="term-title"><span class="term-name">Muon Decay Experiment</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">An experiment comparing the number of muons in cosmic <a class="term-link" href="physicsDictionary.html#ray">rays</a> that reach the Earth's surface without decaying as compared to the number predicted to hit the surface calculated without using relativity theory. The results give evidence to support the <a class="term-link" href="physicsDictionary.html#special-theory-of-relativity">special theory of relativity</a>.</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="letter-header" id="letter-O">O</div>
+  
+  
+  <div class="term-entry hl-term" data-term="optically active substance" id="optically-active-substance">
+  <div class="term-title"><span class="term-name">Optically Active Substance</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">One that rotates the plane of polarization of the light that passes through it. OR One that changes the plane in which the electric <a class="term-link" href="physicsDictionary.html#field">field</a> <a class="term-link" href="physicsDictionary.html#vector">vector</a> of the light vibrates.</div>
+  </div>
+  
+  
+  
+  <div class="letter-header" id="letter-P">P</div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="term-entry hl-term" data-term="pion decay experiment" id="pion-decay-experiment">
+  <div class="term-title"><span class="term-name">Pion Decay Experiment</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">An experiment involving the decay of a fast-moving pion into two gamma <a class="term-link" href="physicsDictionary.html#ray">ray</a> <a class="term-link" href="physicsDictionary.html#photon">photons</a> – indicates that the <a class="term-link" href="physicsDictionary.html#speed-uv">speed</a> of light in a vacuum is independent of its source.</div>
+  </div>
+  <div class="term-entry hl-term" data-term="pixel" id="pixel">
+  <div class="term-title"><span class="term-name">Pixel</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">Small area of a CCD that acts as a capacitor.</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  <div class="term-entry hl-term" data-term="principle of equivalence" id="principle-of-equivalence">
+  <div class="term-title"><span class="term-name">Principle of Equivalence</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">A postulate that states there is no difference between an accelerating <a class="term-link" href="physicsDictionary.html#frame-of-reference">frame of reference</a> and a gravitational <a class="term-link" href="physicsDictionary.html#field">field</a>.</div>
+  </div>
+  
+  <div class="term-entry hl-term" data-term="proper length" id="proper-length">
+  <div class="term-title"><span class="term-name">Proper Length</span> <span class="term-symbol">L₀</span> <span class="term-unit">[m]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">The length of an object recorded in a <a class="term-link" href="physicsDictionary.html#frame-of-reference">frame of reference</a> where the object is at rest. This is the greatest possible length that could be recorded for an object.</div>
+  </div>
+  <div class="term-entry hl-term" data-term="proper time interval" id="proper-time-interval">
+  <div class="term-title"><span class="term-name">Proper Time Interval</span> <span class="term-symbol">Δt₀</span> <span class="term-unit">[s]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">The <a class="term-link" href="physicsDictionary.html#time">time</a> between events as measured in a frame where the events take place at the same point in space. This is the shortest possible <a class="term-link" href="physicsDictionary.html#time">time</a> that any observer could correctly record for the event.</div>
+  </div>
+  
+  
+  <div class="letter-header" id="letter-R">R</div>
+  
+  
+  <div class="term-entry hl-term" data-term="radiation pressure" id="radiation-pressure">
+  <div class="term-title"><span class="term-name">Radiation Pressure</span> <span class="term-symbol">P</span> <span class="term-unit">[Pa]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">The <a class="term-link" href="physicsDictionary.html#pressure-p">pressure</a> exerted on a surface by <a class="term-link" href="physicsDictionary.html#electromagnetic-radiation">electromagnetic radiation</a>. Due to the momentum carried by <a class="term-link" href="physicsDictionary.html#photon">photons</a>.</div>
+  <div class="term-enhancement"><strong>See also:</strong> <a class="term-link" href="physicsDictionary.html#electromagnetic-radiation">Electromagnetic Radiation</a>, <a class="term-link" href="physicsDictionary.html#photon">Photon</a>, <a class="term-link" href="physicsDictionary.html#force">Force</a>.</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  <div class="term-entry hl-term" data-term="rayleigh criterion" id="rayleigh-criterion">
+  <div class="term-title"><span class="term-name">Rayleigh Criterion</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">When the central maximum of one <a class="term-link" href="physicsDictionary.html#diffraction">diffraction</a> pattern overlaps the first minimum of a second <a class="term-link" href="physicsDictionary.html#diffraction">diffraction</a> pattern, the two sources are 'just resolved.'</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="term-entry hl-term" data-term="rest mass" id="rest-mass">
+  <div class="term-title"><span class="term-name">Rest Mass</span> <span class="term-symbol">m₀</span> <span class="term-unit">[kg]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">The <a class="term-link" href="physicsDictionary.html#mass">mass</a> of an object when it is at rest relative to an observer. An invariant quantity in special relativity.</div>
+  <div class="term-enhancement"><strong>See also:</strong> <a class="term-link" href="physicsDictionary.html#inertial-mass">Inertial Mass</a>.</div>
+  </div>
+  
+  <div class="letter-header" id="letter-S">S</div>
+  
+  
+  
+  <div class="term-entry hl-term" data-term="schrödinger model of the atom" id="schrödinger-model-of-the-atom">
+  <div class="term-title"><span class="term-name">Schrödinger Model of the Atom</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">This model assumes that <a class="term-link" href="physicsDictionary.html#electron">electrons</a> in the <a class="term-link" href="physicsDictionary.html#atom">atom</a> may be described by wavefunctions. The <a class="term-link" href="physicsDictionary.html#electron">electron</a> has an undefined position, but the square of the <a class="term-link" href="physicsDictionary.html#amplitude">amplitude</a> of the wavefunction gives the probability of finding the <a class="term-link" href="physicsDictionary.html#electron">electron</a> at a particular point.</div>
+  </div>
+  <div class="term-entry hl-term" data-term="schwarzschild radius (rs)" id="schwarzschild-radius-rs">
+  <div class="term-title"><span class="term-name">Schwarzschild Radius (RS)</span> <span class="term-symbol">RS</span> <span class="term-unit">[m]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">A particular <a class="term-link" href="physicsDictionary.html#distance">distance</a> from the center of black hole where the escape <a class="term-link" href="physicsDictionary.html#velocity-uv">velocity</a> is equal to the <a class="term-link" href="physicsDictionary.html#speed-uv">speed</a> of light.</div>
+  </div>
+  
+  
+  
+  <div class="term-entry hl-term" data-term="simultaneity" id="simultaneity">
+  <div class="term-title"><span class="term-name">Simultaneity</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">Two events occurring at different points in space and which are simultaneous for one observer cannot be simultaneous for another observer in a different <a class="term-link" href="physicsDictionary.html#frame-of-reference">frame of reference</a>.</div>
+  </div>
+  
+  
+  <div class="term-entry hl-term" data-term="sound intensity" id="sound-intensity">
+  <div class="term-title"><span class="term-name">Sound Intensity</span> <span class="term-symbol">I</span> <span class="term-unit">[W m⁻²]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">Amount of <a class="term-link" href="physicsDictionary.html#energy">energy</a> that a sound <a class="term-link" href="physicsDictionary.html#wave">wave</a> brings to a unit area every second. OR <a class="term-link" href="physicsDictionary.html#power-p">Power</a> incident per unit area. <a class="term-link" href="physicsDictionary.html#intensity-i">Intensity</a> depends on the square of the <a class="term-link" href="physicsDictionary.html#amplitude">amplitude</a> of the sound <a class="term-link" href="physicsDictionary.html#wave">wave</a>.</div>
+  </div>
+  <div class="term-entry hl-term" data-term="sound intensity level (il)" id="sound-intensity-level-il">
+  <div class="term-title"><span class="term-name">Sound Intensity Level (IL)</span> <span class="term-symbol">IL</span> <span class="term-unit">[dB]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">One tenth of the common logarithm of the ratio of the <a class="term-link" href="physicsDictionary.html#intensity-i">intensity</a> of a sound to the <a class="term-link" href="physicsDictionary.html#sound-intensity">sound intensity</a> at the threshold of hearing (measured in decibels (dB)).</div>
+  </div>
+  <div class="term-entry hl-term" data-term="spacetime" id="spacetime">
+  <div class="term-title"><span class="term-name">Spacetime</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">Four dimensional coordinates used to describe any event (three spatial dimensions and <a class="term-link" href="physicsDictionary.html#time">time</a>). Moving objects follow the shortest path between two points in spacetime. Gravitational attraction can be explained by the warping of spacetime.</div>
+  </div>
+  <div class="term-entry hl-term" data-term="special theory of relativity" id="special-theory-of-relativity">
+  <div class="term-title"><span class="term-name">Special Theory of Relativity</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">Consists of two postulates: 1) The laws of physics are the same in all inertial reference frames. 2) The <a class="term-link" href="physicsDictionary.html#speed-uv">speed</a> of light in a vacuum is the same for all observers.</div>
+  <div class="term-enhancement"><strong>See also:</strong> <a class="term-link" href="physicsDictionary.html#time-dilation">Time Dilation</a>, <a class="term-link" href="physicsDictionary.html#length-contraction">Length Contraction</a>, <a class="term-link" href="physicsDictionary.html#lorentz-factor-γ">Lorentz Factor (γ)</a>, <a class="term-link" href="physicsDictionary.html#spacetime">Spacetime</a>.</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="term-entry hl-term" data-term="stokes law" id="stokes-law">
+  <div class="term-title"><span class="term-name">Stokes Law</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">Describes the drag <a class="term-link" href="physicsDictionary.html#force">force</a> on a spherical object moving through a viscous fluid at low Reynolds numbers. The drag <a class="term-link" href="physicsDictionary.html#force">force</a> is proportional to <a class="term-link" href="physicsDictionary.html#velocity-uv">velocity</a>, fluid viscosity, and object radius.</div>
+  <div class="term-enhancement"><strong>See also:</strong> <a class="term-link" href="physicsDictionary.html#laminar-flow">Laminar Flow</a>.</div>
+  </div>
+  
+  <div class="term-entry hl-term" data-term="strong force" id="strong-force">
+  <div class="term-title"><span class="term-name">Strong Force</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">The <a class="term-link" href="physicsDictionary.html#fundamental-first-harmonic">fundamental</a> <a class="term-link" href="physicsDictionary.html#force">force</a> responsible for binding quarks together to form <a class="term-link" href="physicsDictionary.html#proton">protons</a> and <a class="term-link" href="physicsDictionary.html#neutron">neutrons</a>, and binding <a class="term-link" href="physicsDictionary.html#proton">protons</a> and <a class="term-link" href="physicsDictionary.html#neutron">neutrons</a> together in atomic nuclei. Strongest of the four <a class="term-link" href="physicsDictionary.html#fundamental-first-harmonic">fundamental</a> <a class="term-link" href="physicsDictionary.html#force">forces</a> but very short range.</div>
+  <div class="term-enhancement"><strong>See also:</strong> <a class="term-link" href="physicsDictionary.html#weak-decay">Weak Decay</a>, <a class="term-link" href="physicsDictionary.html#coulomb-force">Coulomb Force</a>.</div>
+  </div>
+  
+  <div class="term-entry hl-term" data-term="surface of a black hole (event horizon)" id="surface-of-a-black-hole-event-horizon">
+  <div class="term-title"><span class="term-name">Surface of a Black Hole (event horizon)</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">Where the <a class="term-link" href="physicsDictionary.html#escape-speed">escape speed</a> is equal to c and within this surface, <a class="term-link" href="physicsDictionary.html#mass">mass</a> has 'disappeared' from the universe.</div>
+  </div>
+  
+  
+  <div class="letter-header" id="letter-T">T</div>
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="term-entry hl-term" data-term="time dilation" id="time-dilation">
+  <div class="term-title"><span class="term-name">Time Dilation</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">An effect of relativity in which moving clocks run slow.</div>
+  <div class="term-enhancement"><strong>See also:</strong> <a class="term-link" href="physicsDictionary.html#special-theory-of-relativity">Special Theory of Relativity</a>, <a class="term-link" href="physicsDictionary.html#proper-time-interval">Proper Time Interval</a>, <a class="term-link" href="physicsDictionary.html#lorentz-factor-γ">Lorentz Factor (γ)</a>.</div>
+  </div>
+  <div class="term-entry hl-term" data-term="torque" id="torque">
+  <div class="term-title"><span class="term-name">Torque</span> <span class="term-symbol">τ</span> <span class="term-unit">[N m]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">The rotational equivalent of <a class="term-link" href="physicsDictionary.html#force">force</a>; the quantity that causes a change in <a class="term-link" href="physicsDictionary.html#angular-momentum">angular momentum</a>. The turning effect of a <a class="term-link" href="physicsDictionary.html#force">force</a> about an axis or pivot point.</div>
+  <div class="term-enhancement"><strong>See also:</strong> <a class="term-link" href="physicsDictionary.html#turning-moment">Turning Moment</a>, <a class="term-link" href="physicsDictionary.html#force">Force</a>, <a class="term-link" href="physicsDictionary.html#angular-acceleration">Angular Acceleration</a>, <a class="term-link" href="physicsDictionary.html#couple">Couple</a>.</div>
+  </div>
+  
+  
+  
+  
+  
+  <div class="term-entry hl-term" data-term="turning moment" id="turning-moment">
+  <div class="term-title"><span class="term-name">Turning Moment</span> <span class="term-unit">[N m]</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">Another name for moment or <a class="term-link" href="physicsDictionary.html#torque">torque</a>. The product of a <a class="term-link" href="physicsDictionary.html#force">force</a> and the perpendicular <a class="term-link" href="physicsDictionary.html#distance">distance</a> from the pivot to the line of action of the <a class="term-link" href="physicsDictionary.html#force">force</a>.</div>
+  <div class="term-enhancement"><strong>See also:</strong> <a class="term-link" href="physicsDictionary.html#torque">Torque</a>, <a class="term-link" href="physicsDictionary.html#force">Force</a>, <a class="term-link" href="physicsDictionary.html#couple">Couple</a>.</div>
+  </div>
+  <div class="term-entry hl-term" data-term="twin paradox" id="twin-paradox">
+  <div class="term-title"><span class="term-name">Twin Paradox</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">Different observers' measurements of the <a class="term-link" href="physicsDictionary.html#time">time</a> taken for a journey at <a class="term-link" href="physicsDictionary.html#speed-uv">speeds</a> close to the <a class="term-link" href="physicsDictionary.html#speed-uv">speed</a> of light will not be the same. Since one of the twins has to accelerate in the spaceship, this is no longer a symmetrical situation for the twins.</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="letter-header" id="letter-W">W</div>
+  
+  
+  
+  <div class="term-entry hl-term" data-term="wave-particle duality" id="wave-particle-duality">
+  <div class="term-title"><span class="term-name">Wave-Particle Duality</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">Both matter and <a class="term-link" href="physicsDictionary.html#radiation">radiation</a> have a dual nature. They exhibit both <a class="term-link" href="physicsDictionary.html#particle">particle</a> and <a class="term-link" href="physicsDictionary.html#wave">wave</a> properties.</div>
+  <div class="term-enhancement"><strong>See also:</strong> <a class="term-link" href="physicsDictionary.html#matter-waves">Matter Waves</a>, <a class="term-link" href="physicsDictionary.html#photon">Photon</a>, <a class="term-link" href="physicsDictionary.html#de-broglie-hypothesis">de Broglie Hypothesis</a>.</div>
+  </div>
+  
+  
+  <div class="term-entry hl-term" data-term="weak decay" id="weak-decay">
+  <div class="term-title"><span class="term-name">Weak Decay</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">Nuclear decay process mediated by the weak nuclear <a class="term-link" href="physicsDictionary.html#force">force</a>, such as beta decay. Responsible for processes that change one type of quark into another.</div>
+  <div class="term-enhancement"><strong>See also:</strong> <a class="term-link" href="physicsDictionary.html#strong-force">Strong Force</a>, <a class="term-link" href="physicsDictionary.html#radioactive-decay">Radioactive Decay</a>.</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="letter-header" id="letter-D">D</div>
+  <div class="term-entry hl-term" data-term="de broglie hypothesis" id="de-broglie-hypothesis">
+  <div class="term-title"><span class="term-name">de Broglie Hypothesis</span> <span class="hl-badge">HL</span></div>
+  <div class="term-definition">All <a class="term-link" href="physicsDictionary.html#particle">particles</a> can behave like <a class="term-link" href="physicsDictionary.html#wave">waves</a> whose <a class="term-link" href="physicsDictionary.html#wavelength-λ">wavelength</a> is given by λ = h/p where h is Planck's constant and p is the momentum of the <a class="term-link" href="physicsDictionary.html#particle">particle</a>.</div>
+  <div class="term-enhancement"><strong>See also:</strong> <a class="term-link" href="physicsDictionary.html#matter-waves">Matter Waves</a>, <a class="term-link" href="physicsDictionary.html#wavelength-λ">Wavelength (λ)</a>, <a class="term-link" href="physicsDictionary.html#linear-momentum-p">Linear Momentum (p)</a>, <a class="term-link" href="physicsDictionary.html#wave-particle-duality">Wave-Particle Duality</a>.</div>
+  </div>
+  </div>
+  </div>
+  <a class="back-to-top" href="#top" id="backToTop">↑</a>
+  <script>
+          // Search functionality
+          const searchInput = document.getElementById('searchInput');
+          const termEntries = document.querySelectorAll('.term-entry');
+          const letterHeaders = document.querySelectorAll('.letter-header');
+          
+          searchInput.addEventListener('input', function() {
+              const searchTerm = this.value.toLowerCase().trim();
+              
+              if (searchTerm === '') {
+                  termEntries.forEach(entry => entry.classList.remove('hidden'));
+                  letterHeaders.forEach(header => header.style.display = 'block');
+              } else {
+                  let visibleLetters = new Set();
+                  
+                  termEntries.forEach(entry => {
+                      const term = entry.dataset.term;
+                      const definition = entry.querySelector('.term-definition').textContent.toLowerCase();
+                      const enhancement = entry.querySelector('.term-enhancement')?.textContent.toLowerCase() || '';
+                      const title = entry.querySelector('.term-title').textContent.toLowerCase();
+                      
+                      if (term.includes(searchTerm) || definition.includes(searchTerm) || 
+                          enhancement.includes(searchTerm) || title.includes(searchTerm)) {
+                          entry.classList.remove('hidden');
+                          visibleLetters.add(entry.id.charAt(0).toUpperCase());
+                      } else {
+                          entry.classList.add('hidden');
+                      }
+                  });
+                  
+                  letterHeaders.forEach(header => {
+                      const letter = header.id.replace('letter-', '');
+                      header.style.display = visibleLetters.has(letter) ? 'block' : 'none';
+                  });
+              }
+          });
+          
+          // Back to top button
+          const backToTop = document.getElementById('backToTop');
+          
+          window.addEventListener('scroll', function() {
+              backToTop.classList.toggle('visible', window.pageYOffset > 300);
+          });
+          
+          // Smooth scrolling
+          document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+              anchor.addEventListener('click', function(e) {
+                  e.preventDefault();
+                  const target = document.querySelector(this.getAttribute('href'));
+                  if (target) {
+                      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+              });
+          });
+      </script>
+  </body>
+  </html>
