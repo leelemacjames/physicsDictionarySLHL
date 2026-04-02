@@ -2216,7 +2216,7 @@ function toTeX(str, display=false) {
   s = s.replace(/useful work/g,'\\text{useful work}').replace(/input energy/g,'\\text{input energy}');
   s = s.replace(/γ rays/g,'\\gamma\\ \text{rays}').replace(/X-rays/g,'\\text{X-rays}').replace(/UV/g,'\\text{UV}').replace(/IR/g,'\\text{IR}');
   s = s.replace(/\s+/g,' ').trim();
-  return display ? `\[${s}\]` : `\(${s}\)`;
+  return display ? `\\[${s}\\]` : `\\(${s}\\)`;
 }
 
 function setMathHTML(element, raw, display=false) {
