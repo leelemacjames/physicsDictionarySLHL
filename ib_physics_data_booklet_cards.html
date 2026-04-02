@@ -116,7 +116,7 @@ small.key {
 .prompt .math-inline { white-space: normal; }
 </style>
 
-<script>window.MathJax = { tex: {inlineMath: [["\(","\)"]], displayMath: [["\[","\]"]]}, svg: {fontCache: "global"} };</script>
+<script>window.MathJax = { tex: { inlineMath: [["\\(", "\\)"]], displayMath: [["\\[", "\\]"]] }, svg: { fontCache: "global" } };</script>
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
@@ -2193,7 +2193,7 @@ function fracify(s) {
   return s;
 }
 
-function toTeX(str) {
+function toTeX(str, display=false) {
   let s = str;
   s = s.replace(/≈/g,'\\approx ').replace(/≤/g,'\\le ').replace(/≥/g,'\\ge ');
   s = s.replace(/×/g,'\\times ').replace(/π/g,'\\pi ').replace(/θ/g,'\\theta ').replace(/λ/g,'\\lambda ')
@@ -2216,16 +2216,18 @@ function toTeX(str) {
   s = s.replace(/useful work/g,'\\text{useful work}').replace(/input energy/g,'\\text{input energy}');
   s = s.replace(/γ rays/g,'\\gamma\\ \text{rays}').replace(/X-rays/g,'\\text{X-rays}').replace(/UV/g,'\\text{UV}').replace(/IR/g,'\\text{IR}');
   s = s.replace(/\s+/g,' ').trim();
-  return `\\(${s}\\)`;
+  return display ? `\[${s}\]` : `\(${s}\)`;
 }
 
 function setMathHTML(element, raw, display=false) {
-  element.innerHTML = `<span class="math-${display ? 'display' : 'inline'}">${toTeX(raw)}</span>`;
+  element.innerHTML = `<span class="math-${display ? 'display' : 'inline'}">${toTeX(raw, display)}</span>`;
 }
 
 function typesetIfNeeded() {
   if (window.MathJax && MathJax.typesetPromise) {
-    MathJax.typesetPromise([document.getElementById('prompt'), document.getElementById('answer'), document.getElementById('units'), document.getElementById('notes')]);
+    const targets = [document.getElementById('prompt'), document.getElementById('answer'), document.getElementById('units'), document.getElementById('notes')].filter(Boolean);
+    if (MathJax.typesetClear) MathJax.typesetClear(targets);
+    MathJax.typesetPromise(targets).catch(err => console.error(err));
   }
 }
 
@@ -2242,15 +2244,6 @@ function render() {
     el.indexBack.textContent = '—';
     el.progressBar.style.width = '0%';
     return;
-  }
-
-  if (window.MathJax) {
-  const targets = [
-    document.getElementById("card-content"),
-    document.getElementById("card-units")
-  ];
-  MathJax.typesetClear(targets);
-  MathJax.typesetPromise(targets).catch(console.error);
   }
 
   const card = filtered[current];
