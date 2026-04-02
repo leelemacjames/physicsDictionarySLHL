@@ -2152,6 +2152,28 @@ function convertUnicodeScripts(str) {
     });
 }
 
+
+function escapeHTML(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function promptToHTML(raw) {
+  let s = escapeHTML(String(raw || '').trim());
+  const reps = [
+    ['y = a ± b', '\\(y = a \\pm b\\)'],
+    ['y = ab/c', '\\(y = \\frac{ab}{c}\\)'],
+    ['y = aⁿ', '\\(y = a^n\\)'],
+    ['PV = nRT', '\\(PV = nRT\\)'],
+    ['k = 1/(4π ε₀)', '\\(k = \\frac{1}{4\\pi \\varepsilon_0}\\)'],
+    ['R = R₀A^{1/3}', '\\(R = R_0 A^{1/3}\\)']
+  ];
+  for (const [a,b] of reps) s = s.split(a).join(b);
+  return s;
+}
+
 function texifyUnits(s) {
   return s
     .replace(/\bkg\b/g,'\\mathrm{kg}')
@@ -2240,8 +2262,9 @@ function toUnitsTeX(raw) {
 }
 
 function setUnitsHTML(element, raw) {
-  element.innerHTML = `<span class="math-inline">${toUnitsTeX(raw)}</span>`;
+  element.innerHTML = escapeHTML(String(raw || '').trim());
 }
+
 
 function typesetIfNeeded() {
   if (window.MathJax && MathJax.typesetPromise) {
@@ -2267,7 +2290,7 @@ function render() {
   }
 
   const card = filtered[current];
-  el.prompt.textContent = card.prompt;
+  el.prompt.innerHTML = promptToHTML(card.prompt);
   setMathHTML(el.answer, card.answer, true);
   el.frontBadges.innerHTML = badgeHTML(card);
   el.backBadges.innerHTML = badgeHTML(card);
@@ -2282,7 +2305,7 @@ function render() {
     el.unitsBox.style.display = 'none';
   }
   if (card.notes) {
-    el.notes.textContent = card.notes;
+    el.notes.innerHTML = escapeHTML(card.notes);
     el.notesBox.style.display = 'block';
   } else {
     el.notesBox.style.display = 'none';
