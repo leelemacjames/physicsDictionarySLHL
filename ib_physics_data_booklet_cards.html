@@ -95,6 +95,24 @@ button:hover { transform: translateY(-1px); border-color:#4a5365; }
   overflow-wrap: break-word;
   word-break: break-word;
 }
+.equation .math-display {
+  font-size: clamp(1.55rem, 3.2vw, 2.45rem);
+}
+
+.equation .math-inline {
+  font-size: clamp(1.15rem, 2.3vw, 1.75rem);
+  display: inline-block;
+  max-width: 100%;
+  white-space: normal;
+}
+
+.answer-text {
+  font-size: clamp(1.1rem, 2.1vw, 1.6rem);
+  line-height: 1.35;
+  display: block;
+  max-width: 100%;
+  text-wrap: balance;
+}
 .math-display {
   max-width: 100%;
   overflow-wrap: break-word;
@@ -2308,13 +2326,24 @@ function render() {
   }
 
   const card = filtered[current];
-  el.prompt.innerHTML = promptToHTML(card.prompt);
-  const isLong = card.answer.length > 40;
-  if (card.answer.includes('power radiated')) {
-    el.answer.innerHTML = escapeHTML(card.answer);
-  } else {
+el.prompt.innerHTML = promptToHTML(card.prompt);
+
+const isDefinition =
+  card.answer.includes('power radiated') ||
+  card.answer.includes('total scattered power') ||
+  card.answer.includes('total incident power') ||
+  card.answer.includes('useful work') ||
+  card.answer.includes('input energy');
+
+const isLong = card.answer.length > 32;
+
+if (isDefinition) {
+  el.answer.innerHTML = `<span class="answer-text">${escapeHTML(card.answer)}</span>`;
+} else if (isLong) {
+  setMathHTML(el.answer, card.answer, false);
+} else {
   setMathHTML(el.answer, card.answer, true);
-  }  
+}
   el.frontBadges.innerHTML = badgeHTML(card);
   el.backBadges.innerHTML = badgeHTML(card);
   el.indexTop.textContent = `${current + 1} / ${filtered.length}`;
