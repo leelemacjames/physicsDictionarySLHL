@@ -1,0 +1,2470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IB Physics Glossary | Three-Level Flashcards</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; background: #0c0d10; color: #d4d0c8; font-family: 'IBM Plex Sans', sans-serif; overflow-x: hidden; }
+        button:disabled { opacity: 0.3; cursor: default !important; }
+        input::placeholder { color: #6b6860; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect, useCallback } = React;
+
+        const BG = "#0c0d10";
+        const GOLD = "#c8a96e";
+        const HL_RED = "#c0392b";
+        const SURFACE = "#13141a";
+        const BORDER = "#1e2028";
+        const TEXT = "#d4d0c8";
+        const MUTED = "#6b6860";
+        const WHITE = "#f0ede6";
+
+        const TERMS = [
+  {
+    term: "Absolute Magnitude",
+    symbol: "M",
+    unit: "dimensionless",
+    hl: false,
+    keywords: ["intrinsic brightness", "parsec standard", "stellar luminosity"],
+    synonyms: ["intrinsic magnitude"],
+    antonyms: ["Apparent Magnitude"],
+    context: "A star's absolute magnitude M tells you how bright it would appear at exactly 10 parsecs — stripping away distance to reveal true luminosity.",
+    full: "The apparent magnitude a celestial object would have if placed at 10 parsecs from Earth. Because it removes distance as a variable, it is a true measure of intrinsic brightness. Linked to luminosity via the distance modulus m − M = 5 log(d/10)."
+  },
+  {
+  term: "Buoyant Force",
+  symbol: "F_B",
+  unit: "N",
+  hl: false,
+  keywords: ["upthrust", "fluid displacement", "Archimedes"],
+  synonyms: ["upthrust"],
+  antonyms: ["weight"],
+  context: "An object floating in water experiences an upward buoyant force equal to the weight of the displaced water.",
+  full: "The upward force exerted by a fluid on an immersed object. According to Archimedes’ principle, it is equal to the weight of the fluid displaced by the object."
+},
+{
+  term: "Archimedes' Principle",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["fluid displacement", "upthrust", "buoyancy"],
+  synonyms: ["law of buoyancy"],
+  antonyms: ["sinking without support"],
+  context: "A submerged block experiences an upward force because it displaces water, and that displaced water has weight.",
+  full: "A body wholly or partially immersed in a fluid experiences an upward buoyant force equal to the weight of the fluid it displaces."
+},
+{
+  term: "Drag Force",
+  symbol: "F_D",
+  unit: "N",
+  hl: false,
+  keywords: ["air resistance", "fluid resistance", "opposes motion"],
+  synonyms: ["resistive force"],
+  antonyms: ["thrust"],
+  context: "As a cyclist speeds up, drag force increases and opposes further acceleration.",
+  full: "A resistive force exerted by a fluid on an object moving through it. It always acts opposite to the direction of motion."
+},
+{
+  term: "Elastic Potential Energy",
+  symbol: "E_e",
+  unit: "J",
+  hl: false,
+  keywords: ["spring energy", "deformation", "1/2kx²"],
+  synonyms: ["strain energy"],
+  antonyms: ["kinetic energy"],
+  context: "Stretching a spring stores elastic potential energy that can later be converted into motion.",
+  full: "The energy stored in an elastic object when it is stretched or compressed. For a spring obeying Hooke’s law, E_e = 1/2 kx²."
+},
+{
+  term: "Power Dissipation",
+  symbol: "P",
+  unit: "W",
+  hl: false,
+  keywords: ["energy loss", "heating", "I²R"],
+  synonyms: ["thermal power loss"],
+  antonyms: ["energy storage"],
+  context: "A resistor in a circuit warms up because electrical energy is dissipated as heat.",
+  full: "The rate at which electrical energy is converted into thermal energy or other non-useful forms. In a resistor, P = IV = I²R = V²/R."
+},
+{
+  term: "Potential Difference",
+  symbol: "V",
+  unit: "V",
+  hl: false,
+  keywords: ["energy per charge", "voltage", "work done"],
+  synonyms: ["voltage"],
+  antonyms: ["zero potential difference"],
+  context: "A 12 V battery gives each coulomb of charge 12 joules of energy as it moves through the circuit.",
+  full: "The work done or energy transferred per unit charge between two points in a circuit: V = W/q."
+},
+{
+  term: "Resistivity",
+  symbol: "ρ",
+  unit: "Ω m",
+  hl: false,
+  keywords: ["material property", "R = ρL/A", "electrical opposition"],
+  synonyms: ["specific resistance"],
+  antonyms: ["conductivity"],
+  context: "Copper has low resistivity, so it is widely used for electrical wiring.",
+  full: "An intrinsic property of a material describing how strongly it opposes electric current. It is related to resistance by R = ρL/A."
+},
+{
+  term: "Conductivity",
+  symbol: "σ",
+  unit: "S m⁻¹",
+  hl: true,
+  keywords: ["inverse resistivity", "charge transport", "material property"],
+  synonyms: ["electrical conductivity"],
+  antonyms: ["resistivity"],
+  context: "Metals usually have high conductivity because they contain many mobile charge carriers.",
+  full: "A measure of a material’s ability to conduct electric current. It is the reciprocal of resistivity: σ = 1/ρ."
+},
+{
+  term: "Kirchhoff's First Law",
+  symbol: "ΣI = 0",
+  unit: "—",
+  hl: false,
+  keywords: ["junction rule", "conservation of charge", "current"],
+  synonyms: ["current law", "junction law"],
+  antonyms: ["charge accumulation"],
+  context: "At any junction in a circuit, the total current flowing in equals the total current flowing out.",
+  full: "The algebraic sum of currents at any junction in a circuit is zero. This follows from conservation of electric charge."
+},
+{
+  term: "Kirchhoff's Second Law",
+  symbol: "ΣV = 0",
+  unit: "—",
+  hl: false,
+  keywords: ["loop rule", "energy conservation", "voltage"],
+  synonyms: ["voltage law", "loop law"],
+  antonyms: ["energy gain without source"],
+  context: "Around a complete circuit loop, the total voltage rises equal the total voltage drops.",
+  full: "The algebraic sum of potential differences and emfs around any closed loop in a circuit is zero. This follows from conservation of energy."
+},
+{
+  term: "Series Circuit",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["single path", "same current", "voltage split"],
+  synonyms: ["series connection"],
+  antonyms: ["parallel circuit"],
+  context: "In a series circuit, the same current passes through every component because there is only one path.",
+  full: "A circuit arrangement in which components are connected one after another so that the same current flows through each component."
+},
+{
+  term: "Parallel Circuit",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["multiple paths", "same voltage", "current split"],
+  synonyms: ["parallel connection"],
+  antonyms: ["series circuit"],
+  context: "Domestic appliances are connected in parallel so each receives the same potential difference.",
+  full: "A circuit arrangement in which components are connected across the same two points, so each branch has the same potential difference."
+},
+{
+  term: "Cell",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["chemical source", "emf", "electrical energy"],
+  synonyms: ["electrochemical cell"],
+  antonyms: ["load"],
+  context: "A cell converts chemical energy into electrical energy and drives current around a circuit.",
+  full: "A source of electromotive force that converts chemical energy into electrical energy."
+},
+{
+  term: "Internal Resistance",
+  symbol: "r",
+  unit: "Ω",
+  hl: false,
+  keywords: ["voltage drop inside source", "terminal pd", "energy loss"],
+  synonyms: ["source resistance"],
+  antonyms: ["ideal source"],
+  context: "When current flows from a battery, some energy is lost inside it because of internal resistance.",
+  full: "The resistance within a source of emf that causes some energy to be dissipated as heat when current flows. Terminal voltage is given by V = ε − Ir."
+},
+{
+  term: "Terminal Potential Difference",
+  symbol: "V",
+  unit: "V",
+  hl: false,
+  keywords: ["loaded voltage", "emf minus loss", "battery"],
+  synonyms: ["terminal voltage"],
+  antonyms: ["emf"],
+  context: "A battery labeled 1.5 V may deliver less than 1.5 V when supplying current because of internal resistance.",
+  full: "The potential difference across the terminals of a source when it is connected in a circuit. It is less than the emf when current flows because of internal resistance."
+},
+{
+  term: "Capacitor Discharge",
+  symbol: "Q = Q₀e^(−t/RC)",
+  unit: "—",
+  hl: true,
+  keywords: ["exponential decay", "RC circuit", "charge decreases"],
+  synonyms: ["capacitor decay"],
+  antonyms: ["capacitor charging"],
+  context: "When a capacitor discharges through a resistor, its charge and voltage decrease exponentially with time.",
+  full: "The process by which a charged capacitor loses charge through a circuit. In an RC circuit, charge, current, and voltage decrease exponentially."
+},
+{
+  term: "Capacitor Charging",
+  symbol: "Q = Q₀(1 − e^(−t/RC))",
+  unit: "—",
+  hl: true,
+  keywords: ["exponential growth", "RC circuit", "charge buildup"],
+  synonyms: ["capacitor buildup"],
+  antonyms: ["capacitor discharge"],
+  context: "A capacitor charges rapidly at first, then more slowly as its voltage approaches the supply voltage.",
+  full: "The process by which a capacitor accumulates charge when connected to a source through a resistor. In an RC circuit, the charge rises exponentially toward a maximum value."
+},
+{
+  term: "Dielectric",
+  symbol: "—",
+  unit: "—",
+  hl: true,
+  keywords: ["insulator", "capacitor", "increases capacitance"],
+  synonyms: ["insulating medium"],
+  antonyms: ["conductor"],
+  context: "Placing a dielectric between capacitor plates reduces the effective field and allows more charge to be stored.",
+  full: "An insulating material placed between capacitor plates. It increases capacitance by reducing the electric field within the capacitor for a given charge."
+},
+{
+  term: "Magnetic Field Strength",
+  symbol: "B",
+  unit: "T",
+  hl: false,
+  keywords: ["tesla", "magnetic flux density", "field strength"],
+  synonyms: ["magnetic flux density"],
+  antonyms: ["field-free region"],
+  context: "A stronger magnetic field exerts a greater force on a moving charge or current-carrying wire.",
+  full: "A measure of the strength of a magnetic field. It is defined through the force experienced by moving charges or current-carrying conductors in the field."
+},
+{
+  term: "Magnetic Force on a Charge",
+  symbol: "F = qvB sinθ",
+  unit: "N",
+  hl: false,
+  keywords: ["moving charge", "magnetic field", "perpendicular force"],
+  synonyms: ["Lorentz magnetic force"],
+  antonyms: ["electric force at rest"],
+  context: "A charged particle entering a magnetic field at right angles follows a curved path because the magnetic force acts sideways.",
+  full: "The force on a moving charge in a magnetic field is F = qvB sinθ. It acts perpendicular to both the velocity and the magnetic field."
+},
+{
+  term: "Magnetic Force on a Current",
+  symbol: "F = BIL sinθ",
+  unit: "N",
+  hl: false,
+  keywords: ["motor effect", "current in field", "wire force"],
+  synonyms: ["motor force"],
+  antonyms: ["no current"],
+  context: "A wire carrying current in a magnetic field experiences a force, which is the basis of electric motors.",
+  full: "A current-carrying conductor in a magnetic field experiences a force given by F = BIL sinθ."
+},
+{
+  term: "Motor Effect",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["force on wire", "current and field", "electric motor"],
+  synonyms: ["magnetic force effect"],
+  antonyms: ["static conductor"],
+  context: "The spinning of an electric motor is caused by the force on current-carrying wires in a magnetic field.",
+  full: "The phenomenon in which a current-carrying conductor placed in a magnetic field experiences a force."
+},
+{
+  term: "Electronvolt",
+  symbol: "eV",
+  unit: "eV",
+  hl: false,
+  keywords: ["small energy unit", "electron charge", "particle physics"],
+  synonyms: ["electron volt"],
+  antonyms: ["macroscopic joule scale"],
+  context: "Atomic and nuclear energies are often measured in electronvolts because the joule is too large a unit.",
+  full: "The energy gained by an electron when accelerated through a potential difference of 1 volt. 1 eV = 1.60 × 10⁻¹⁹ J."
+},
+{
+  term: "Ionisation",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["electron removal", "charged atom", "radiation"],
+  synonyms: ["ionization"],
+  antonyms: ["neutralization"],
+  context: "Alpha particles are strongly ionising because they can remove many electrons from atoms as they pass through matter.",
+  full: "The process by which an atom or molecule gains or loses electrons, becoming charged."
+},
+{
+  term: "Ionising Radiation",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["particle or photon", "electron removal", "biological damage"],
+  synonyms: ["ionizing radiation"],
+  antonyms: ["non-ionising radiation"],
+  context: "X-rays and gamma rays are ionising because they carry enough energy to remove electrons from atoms.",
+  full: "Radiation with enough energy to ionise atoms or molecules by removing electrons from them."
+},
+{
+  term: "Beta Particle",
+  symbol: "β",
+  unit: "—",
+  hl: false,
+  keywords: ["fast electron", "radioactive decay", "moderate penetration"],
+  synonyms: ["beta electron"],
+  antonyms: ["alpha particle", "gamma photon"],
+  context: "A beta particle can travel farther than an alpha particle in air but is still stopped by thin metal.",
+  full: "A high-speed electron or positron emitted during radioactive decay. Beta radiation is moderately ionising and moderately penetrating."
+},
+{
+  term: "Gamma Ray",
+  symbol: "γ",
+  unit: "—",
+  hl: false,
+  keywords: ["electromagnetic radiation", "high energy", "nuclear emission"],
+  synonyms: ["gamma photon"],
+  antonyms: ["alpha particle", "beta particle"],
+  context: "Gamma rays are very penetrating and require thick lead or concrete for shielding.",
+  full: "A high-energy photon emitted from an atomic nucleus. Gamma radiation is weakly ionising but highly penetrating."
+},
+{
+  term: "Nucleon Number",
+  symbol: "A",
+  unit: "—",
+  hl: false,
+  keywords: ["mass number", "protons plus neutrons", "nucleus"],
+  synonyms: ["mass number"],
+  antonyms: ["atomic number"],
+  context: "Carbon-14 has nucleon number 14 because its nucleus contains 14 nucleons in total.",
+  full: "The total number of protons and neutrons in the nucleus of an atom."
+},
+{
+  term: "Proton Number",
+  symbol: "Z",
+  unit: "—",
+  hl: false,
+  keywords: ["atomic number", "number of protons", "element identity"],
+  synonyms: ["atomic number"],
+  antonyms: ["nucleon number"],
+  context: "The proton number determines which element an atom is, because it fixes the number of protons in the nucleus.",
+  full: "The number of protons in an atomic nucleus. It determines the identity of the element."
+},
+{
+  term: "Isotope",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["same element", "different neutrons", "same proton number"],
+  synonyms: ["nuclide variant"],
+  antonyms: ["different element"],
+  context: "Carbon-12 and carbon-14 are isotopes because they have the same number of protons but different numbers of neutrons.",
+  full: "Atoms of the same element with the same proton number but different numbers of neutrons."
+},
+{
+  term: "Nuclear Fission",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["heavy nucleus split", "chain reaction", "energy release"],
+  synonyms: ["fission reaction"],
+  antonyms: ["nuclear fusion"],
+  context: "When a uranium nucleus absorbs a neutron and splits, a large amount of energy is released.",
+  full: "The splitting of a heavy atomic nucleus into two or more lighter nuclei, usually accompanied by the release of energy and neutrons."
+},
+{
+  term: "Nuclear Fusion",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["light nuclei combine", "stellar energy", "high temperature"],
+  synonyms: ["fusion reaction"],
+  antonyms: ["nuclear fission"],
+  context: "The Sun produces energy by fusing hydrogen nuclei into helium in its core.",
+  full: "The process in which light nuclei combine to form a heavier nucleus, releasing energy if the products have greater binding energy per nucleon."
+},
+{
+  term: "Chain Reaction",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["self-sustaining", "fission neutrons", "multiplication"],
+  synonyms: ["self-sustaining reaction"],
+  antonyms: ["subcritical reaction"],
+  context: "In a fission reactor, neutrons from one fission event can trigger more fission events.",
+  full: "A reaction in which the products of one event cause further events of the same kind, allowing the process to continue and possibly grow."
+},
+{
+  term: "Critical Mass",
+  symbol: "—",
+  unit: "kg",
+  hl: false,
+  keywords: ["self-sustaining fission", "minimum mass", "chain reaction"],
+  synonyms: ["critical amount"],
+  antonyms: ["subcritical mass"],
+  context: "A sample of fissile material must exceed critical mass for a self-sustaining chain reaction to occur.",
+  full: "The minimum mass of fissile material needed to sustain a nuclear chain reaction."
+},
+{
+  term: "Wavefront",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["same phase", "wave geometry", "propagation"],
+  synonyms: ["surface of equal phase"],
+  antonyms: ["ray"],
+  context: "Each wavefront joins points on a wave that are oscillating in step.",
+  full: "A line or surface joining points on a wave that are in the same phase of oscillation."
+},
+{
+  term: "Ray",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["direction of travel", "wave model", "optics"],
+  synonyms: ["light ray"],
+  antonyms: ["wavefront"],
+  context: "In optics diagrams, rays are drawn perpendicular to wavefronts to show the direction of energy transfer.",
+  full: "A line representing the direction of propagation of a wave or the path of light energy."
+},
+{
+  term: "Coherent Sources",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["constant phase difference", "same frequency", "interference"],
+  synonyms: ["coherent waves"],
+  antonyms: ["incoherent sources"],
+  context: "Stable interference patterns require coherent sources with the same frequency and a constant phase relationship.",
+  full: "Sources that emit waves of the same frequency and maintain a constant phase difference."
+},
+{
+  term: "Path Difference",
+  symbol: "Δx",
+  unit: "m",
+  hl: false,
+  keywords: ["interference", "distance difference", "phase relation"],
+  synonyms: ["difference in path length"],
+  antonyms: ["equal path"],
+  context: "Whether two waves interfere constructively or destructively depends on their path difference.",
+  full: "The difference in the distances travelled by two waves from their sources to a given point."
+},
+{
+  term: "Phase Difference",
+  symbol: "Δφ",
+  unit: "rad",
+  hl: false,
+  keywords: ["relative phase", "wave alignment", "interference"],
+  synonyms: ["phase shift"],
+  antonyms: ["in phase"],
+  context: "Two waves that differ by π radians are exactly out of phase and can cancel each other.",
+  full: "The difference in phase angle between two waves or oscillations."
+},
+{
+  term: "Polarisation",
+  symbol: "—",
+  unit: "—",
+  hl: true,
+  keywords: ["transverse waves", "single plane", "light"],
+  synonyms: ["polarization"],
+  antonyms: ["unpolarised wave"],
+  context: "Polarising filters reduce glare by blocking light oscillations in certain directions.",
+  full: "The restriction of oscillations of a transverse wave to one plane. Polarisation demonstrates that light is a transverse wave."
+},
+{
+  term: "Node",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["zero displacement", "standing wave", "fixed point"],
+  synonyms: ["point of no vibration"],
+  antonyms: ["antinode"],
+  context: "In a standing wave on a string, nodes remain fixed because destructive interference is permanent there.",
+  full: "A point on a standing wave where the displacement is always zero."
+},
+{
+  term: "Antinode",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["maximum displacement", "standing wave", "oscillation peak"],
+  synonyms: ["point of maximum vibration"],
+  antonyms: ["node"],
+  context: "Antinodes are the points on a standing wave that vibrate with the greatest amplitude.",
+  full: "A point on a standing wave where the amplitude of oscillation is maximum."
+},
+{
+  term: "Resonance",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["natural frequency", "large amplitude", "driving force"],
+  synonyms: ["resonant response"],
+  antonyms: ["damping"],
+  context: "A swing moves with maximum amplitude when pushed at its natural frequency.",
+  full: "The phenomenon in which a system oscillates with maximum amplitude when driven at its natural frequency."
+},
+{
+  term: "Damping",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["energy loss", "reduced amplitude", "resistance"],
+  synonyms: ["attenuation"],
+  antonyms: ["resonance"],
+  context: "A pendulum eventually stops because friction and air resistance remove energy from the system.",
+  full: "The gradual reduction in amplitude of an oscillation due to energy dissipation."
+},
+{
+  term: "Natural Frequency",
+  symbol: "f₀",
+  unit: "Hz",
+  hl: false,
+  keywords: ["free oscillation", "system property", "resonance"],
+  synonyms: ["resonant frequency"],
+  antonyms: ["driving frequency mismatch"],
+  context: "Each bridge or string has a natural frequency at which it prefers to vibrate.",
+  full: "The frequency at which a system oscillates when disturbed and left to vibrate freely."
+},
+{
+  term: "Period",
+  symbol: "T",
+  unit: "s",
+  hl: false,
+  keywords: ["time for one cycle", "inverse frequency", "oscillation"],
+  synonyms: ["cycle time"],
+  antonyms: ["frequency"],
+  context: "A pendulum with period 2 s takes 2 seconds to complete one full oscillation.",
+  full: "The time taken for one complete oscillation or cycle. It is the reciprocal of frequency: T = 1/f."
+},
+{
+  term: "Temperature",
+  symbol: "T",
+  unit: "K",
+  hl: false,
+  keywords: ["thermal state", "average kinetic energy", "Kelvin"],
+  synonyms: ["absolute temperature"],
+  antonyms: ["absolute zero"],
+  context: "Heating a gas raises its temperature because the particles move faster on average.",
+  full: "A measure of the average random kinetic energy of particles in a system. Absolute temperature is measured in kelvins."
+},
+{
+  term: "Thermal Equilibrium",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["same temperature", "no net heat flow", "equilibrium"],
+  synonyms: ["heat balance"],
+  antonyms: ["temperature gradient"],
+  context: "Two objects in contact eventually reach thermal equilibrium when no further net heat flows between them.",
+  full: "The state in which systems in thermal contact have the same temperature and exchange no net thermal energy."
+},
+{
+  term: "Heat Capacity",
+  symbol: "C",
+  unit: "J K⁻¹",
+  hl: false,
+  keywords: ["energy per kelvin", "whole object", "thermal response"],
+  synonyms: ["thermal capacity"],
+  antonyms: ["temperature insensitivity"],
+  context: "A large metal block needs more energy per degree of temperature rise than a small one because it has greater heat capacity.",
+  full: "The amount of energy required to raise the temperature of an entire object by one kelvin."
+},
+{
+  term: "Molar Mass",
+  symbol: "M",
+  unit: "kg mol⁻¹",
+  hl: false,
+  keywords: ["mass per mole", "substance amount", "chemistry link"],
+  synonyms: ["molecular mass per mole"],
+  antonyms: ["particle mass"],
+  context: "Carbon dioxide has a larger molar mass than oxygen because each mole contains more mass.",
+  full: "The mass of one mole of a substance."
+},
+{
+  term: "Amount of Substance",
+  symbol: "n",
+  unit: "mol",
+  hl: false,
+  keywords: ["moles", "particle count", "Avogadro"],
+  synonyms: ["number of moles"],
+  antonyms: ["individual particle"],
+  context: "One mole of any substance contains the same number of particles, regardless of what the substance is.",
+  full: "A measure of the number of specified entities in a sample, measured in moles."
+},
+{
+  term: "Avogadro Constant",
+  symbol: "N_A",
+  unit: "mol⁻¹",
+  hl: false,
+  keywords: ["particles per mole", "6.02 × 10²³", "mole"],
+  synonyms: ["Avogadro number"],
+  antonyms: [],
+  context: "One mole of atoms contains approximately 6.02 × 10²³ atoms.",
+  full: "The number of constituent particles in one mole of a substance, approximately 6.02 × 10²³ mol⁻¹."
+},
+{
+  term: "Boltzmann Constant",
+  symbol: "k",
+  unit: "J K⁻¹",
+  hl: true,
+  keywords: ["particle energy", "temperature", "kinetic theory"],
+  synonyms: ["Boltzmann's constant"],
+  antonyms: [],
+  context: "Boltzmann’s constant links the microscopic energy scale of particles to macroscopic temperature.",
+  full: "A fundamental constant relating the average energy per particle to temperature in statistical physics."
+},
+{
+  term: "Root-Mean-Square Speed",
+  symbol: "c_rms",
+  unit: "m s⁻¹",
+  hl: true,
+  keywords: ["gas particles", "kinetic theory", "average speed measure"],
+  synonyms: ["rms speed"],
+  antonyms: ["zero thermal motion"],
+  context: "As gas temperature increases, the rms speed of its molecules also increases.",
+  full: "A representative speed of gas particles defined from the square root of the mean of the squared speeds. It is linked to temperature by kinetic theory."
+},
+{
+  term: "Brownian Motion",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["random motion", "molecular collisions", "evidence for atoms"],
+  synonyms: ["Brownian movement"],
+  antonyms: ["uniform motion"],
+  context: "Pollen grains in water jiggle randomly because they are hit unevenly by unseen water molecules.",
+  full: "The random motion of small particles suspended in a fluid, caused by collisions with the molecules of the fluid."
+},
+{
+  term: "Monochromatic Light",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["single wavelength", "single frequency", "pure color"],
+  synonyms: ["single-frequency light"],
+  antonyms: ["white light"],
+  context: "A laser often produces nearly monochromatic light, making it useful in interference experiments.",
+  full: "Light consisting of a single wavelength or frequency."
+},
+{
+  term: "White Light",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["many wavelengths", "visible spectrum", "broadband light"],
+  synonyms: ["polychromatic light"],
+  antonyms: ["monochromatic light"],
+  context: "Sunlight appears white because it contains a broad range of visible wavelengths.",
+  full: "Light made up of many wavelengths across the visible spectrum."
+},
+{
+  term: "Dispersion",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["wavelength separation", "prism", "refractive index"],
+  synonyms: ["spectral spreading"],
+  antonyms: ["monochromatic propagation"],
+  context: "A prism spreads white light into a spectrum because different wavelengths refract by different amounts.",
+  full: "The separation of waves according to wavelength because wave speed or refractive index depends on wavelength."
+},
+{
+  term: "Total Internal Reflection",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["critical angle", "no refraction", "optical fiber"],
+  synonyms: ["TIR"],
+  antonyms: ["partial refraction"],
+  context: "Optical fibers guide light by repeated total internal reflection at the core boundary.",
+  full: "The complete reflection of a wave at a boundary when it travels from a denser to a less dense medium at an angle greater than the critical angle."
+},
+{
+  term: "Critical Angle",
+  symbol: "c",
+  unit: "°",
+  hl: false,
+  keywords: ["boundary angle", "onset of TIR", "refractive index"],
+  synonyms: ["limiting angle"],
+  antonyms: ["small angle of incidence"],
+  context: "At the critical angle, the refracted ray travels along the boundary between the two media.",
+  full: "The angle of incidence in the denser medium for which the refracted ray is at 90° to the normal."
+},
+{
+  term: "Diffraction Grating",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["many slits", "interference", "spectrum"],
+  synonyms: ["grating"],
+  antonyms: ["single slit"],
+  context: "A diffraction grating produces sharp bright maxima because light from many slits interferes constructively at specific angles.",
+  full: "An optical element with many closely spaced slits or lines that diffracts light and produces interference maxima."
+},
+{
+  term: "Young Double-Slit Experiment",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["interference", "coherent light", "wave nature"],
+  synonyms: ["double-slit experiment"],
+  antonyms: ["single-ray model"],
+  context: "The alternating bright and dark fringes in Young’s experiment demonstrate the wave nature of light.",
+  full: "An experiment in which coherent light passes through two narrow slits and forms an interference pattern, demonstrating superposition and wave behaviour."
+},
+{
+  term: "Optical Path Difference",
+  symbol: "—",
+  unit: "m",
+  hl: false,
+  keywords: ["phase change", "refractive medium", "interference"],
+  synonyms: ["effective path difference"],
+  antonyms: ["equal optical path"],
+  context: "Two beams can interfere even if they travel equal distances, provided they pass through media of different refractive index.",
+  full: "The difference in effective path lengths of two waves, taking into account both distance travelled and refractive index."
+},
+{
+  term: "Pair Production",
+  symbol: "—",
+  unit: "—",
+  hl: true,
+  keywords: ["gamma photon", "electron positron", "matter creation"],
+  synonyms: ["matter pair creation"],
+  antonyms: ["annihilation"],
+  context: "A high-energy gamma photon near a nucleus can turn into an electron and a positron.",
+  full: "The creation of a particle-antiparticle pair, usually an electron and positron, from a high-energy photon in the presence of a nucleus."
+},
+{
+  term: "Annihilation",
+  symbol: "—",
+  unit: "—",
+  hl: true,
+  keywords: ["matter-antimatter", "gamma photons", "energy conversion"],
+  synonyms: ["particle annihilation"],
+  antonyms: ["pair production"],
+  context: "When an electron meets a positron, they can annihilate to produce gamma rays.",
+  full: "The process in which a particle and its antiparticle destroy each other, converting their mass into energy, usually as photons."
+},
+{
+  term: "Antiparticle",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["opposite charge", "same mass", "quantum counterpart"],
+  synonyms: ["anti-particle"],
+  antonyms: ["ordinary particle"],
+  context: "A positron is the antiparticle of the electron because it has the same mass but opposite charge.",
+  full: "A particle with the same mass as another particle but opposite electric charge and other quantum numbers."
+},
+{
+  term: "Mass-Energy Equivalence",
+  symbol: "E = mc²",
+  unit: "J",
+  hl: false,
+  keywords: ["Einstein", "rest energy", "mass conversion"],
+  synonyms: ["Einstein mass-energy relation"],
+  antonyms: ["mass conservation alone"],
+  context: "Small losses of mass in nuclear reactions correspond to very large releases of energy.",
+  full: "The principle that mass and energy are equivalent and interchangeable, expressed by E = mc²."
+},
+{
+  term: "Rest Energy",
+  symbol: "E₀",
+  unit: "J",
+  hl: true,
+  keywords: ["mc²", "intrinsic energy", "relativity"],
+  synonyms: ["mass energy"],
+  antonyms: ["kinetic energy"],
+  context: "Even a stationary particle has rest energy because mass itself corresponds to energy.",
+  full: "The energy a body possesses due to its mass alone, given by E₀ = mc²."
+},
+{
+  term: "Relativistic Momentum",
+  symbol: "p = γmv",
+  unit: "kg m s⁻¹",
+  hl: true,
+  keywords: ["high speed", "Lorentz factor", "special relativity"],
+  synonyms: ["relativistic linear momentum"],
+  antonyms: ["classical momentum"],
+  context: "At speeds close to light speed, momentum grows faster than the simple classical formula p = mv suggests.",
+  full: "The momentum of a particle moving at relativistic speed, given by p = γmv."
+},
+{
+  term: "Event Horizon",
+  symbol: "—",
+  unit: "—",
+  hl: true,
+  keywords: ["black hole boundary", "escape impossible", "Schwarzschild"],
+  synonyms: ["point of no return"],
+  antonyms: ["open spacetime"],
+  context: "Crossing the event horizon of a black hole means nothing can return to the outside universe.",
+  full: "The boundary surrounding a black hole beyond which no information or matter can escape."
+},
+{
+  term: "Schwarzschild Radius",
+  symbol: "R_s",
+  unit: "m",
+  hl: true,
+  keywords: ["black hole radius", "event horizon", "escape velocity c"],
+  synonyms: ["gravitational radius"],
+  antonyms: ["ordinary stellar radius"],
+  context: "If all the mass of an object were compressed within its Schwarzschild radius, it would become a black hole.",
+  full: "The radius at which the escape velocity from a mass equals the speed of light. It defines the event horizon of a non-rotating black hole."
+},
+{
+  term: "Luminosity",
+  symbol: "L",
+  unit: "W",
+  hl: false,
+  keywords: ["total power output", "star brightness", "intrinsic"],
+  synonyms: ["radiant power"],
+  antonyms: ["apparent brightness"],
+  context: "A star’s luminosity is the total energy it emits every second, independent of how far away it is.",
+  full: "The total power radiated by a star or other source in all directions."
+},
+{
+  term: "Parallax Angle",
+  symbol: "p",
+  unit: "arcsecond",
+  hl: false,
+  keywords: ["stellar distance", "apparent shift", "Earth orbit"],
+  synonyms: ["annual parallax"],
+  antonyms: ["zero shift"],
+  context: "Nearby stars appear to shift against the distant background as Earth moves around the Sun.",
+  full: "The apparent angular shift of a nearby star against distant background stars due to Earth’s orbital motion."
+},
+{
+  term: "Main Sequence",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["hydrogen fusion", "stellar stability", "H-R diagram"],
+  synonyms: ["main-sequence stage"],
+  antonyms: ["giant phase"],
+  context: "Most stars spend the majority of their lives on the main sequence, steadily fusing hydrogen into helium.",
+  full: "The prominent band on the Hertzsprung–Russell diagram where stars spend most of their lifetimes fusing hydrogen in their cores."
+},
+{
+  term: "Protostar",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["forming star", "gravitational collapse", "pre-main sequence"],
+  synonyms: ["young stellar object"],
+  antonyms: ["stellar remnant"],
+  context: "A collapsing gas cloud becomes a protostar before core temperatures are high enough for sustained fusion.",
+  full: "An early stage in star formation in which a collapsing gas cloud heats up but has not yet begun sustained hydrogen fusion."
+},
+{
+  term: "Supernova",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["stellar explosion", "heavy elements", "remnant"],
+  synonyms: ["supernova explosion"],
+  antonyms: ["stable main sequence"],
+  context: "A supernova can briefly outshine an entire galaxy and leave behind a neutron star or black hole.",
+  full: "A violent stellar explosion that occurs either when a massive star collapses or when a white dwarf becomes unstable."
+},
+{
+  term: "Redshift",
+  symbol: "z",
+  unit: "dimensionless",
+  hl: false,
+  keywords: ["longer wavelength", "recession", "cosmology"],
+  synonyms: ["spectral redshift"],
+  antonyms: ["blueshift"],
+  context: "Galaxies moving away from us show redshift because the wavelengths of their emitted light are stretched.",
+  full: "An increase in the observed wavelength of electromagnetic radiation, often caused by recession, gravity, or expansion of space."
+},
+{
+  term: "Hubble's Law",
+  symbol: "v = H₀d",
+  unit: "—",
+  hl: false,
+  keywords: ["recession speed", "distance relation", "expanding universe"],
+  synonyms: ["Hubble law"],
+  antonyms: ["static universe"],
+  context: "More distant galaxies recede faster, providing evidence that the universe is expanding.",
+  full: "The observed relationship that the recession speed of a galaxy is proportional to its distance from Earth: v = H₀d."
+},
+{
+  term: "Cosmic Microwave Background",
+  symbol: "CMB",
+  unit: "—",
+  hl: false,
+  keywords: ["relic radiation", "Big Bang", "microwave spectrum"],
+  synonyms: ["CMB radiation"],
+  antonyms: ["local radiation source"],
+  context: "The cosmic microwave background is faint radiation filling all space and is strong evidence for the Big Bang.",
+  full: "Thermal microwave radiation left over from the early universe, observed nearly uniformly in all directions."
+},
+{
+  term: "Big Bang Theory",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["expanding universe", "early hot dense state", "cosmology"],
+  synonyms: ["Big Bang model"],
+  antonyms: ["steady state theory"],
+  context: "The Big Bang theory proposes that the universe began in an extremely hot, dense state and has been expanding ever since.",
+  full: "The cosmological model describing the origin and evolution of the universe from an early hot, dense state."
+},        
+  {
+  term: "Pressure",
+  symbol: "p",
+  unit: "Pa",
+  hl: false,
+  keywords: ["force per area", "p = F/A", "scalar"],
+  synonyms: ["normal stress"],
+  antonyms: ["vacuum"],
+  context: "Pressure increases when the same force is applied over a smaller area, such as with a sharp knife.",
+  full: "Pressure is defined as the force acting perpendicular to a surface per unit area: p = F/A. It is a scalar quantity measured in pascals (Pa)."
+},
+{
+  term: "Density",
+  symbol: "ρ",
+  unit: "kg m⁻³",
+  hl: false,
+  keywords: ["mass per volume", "ρ = m/V", "material property"],
+  synonyms: ["mass density"],
+  antonyms: ["void"],
+  context: "Steel has a much higher density than wood, meaning more mass is packed into the same volume.",
+  full: "Density is the mass per unit volume of a substance, given by ρ = m/V. It is an intrinsic property of materials."
+},
+{
+  term: "Hooke's Law",
+  symbol: "F = kx",
+  unit: "N",
+  hl: false,
+  keywords: ["elastic deformation", "spring constant", "proportionality"],
+  synonyms: ["spring law"],
+  antonyms: ["plastic deformation"],
+  context: "Doubling the extension of a spring doubles the restoring force, as long as the limit of proportionality is not exceeded.",
+  full: "Hooke’s Law states that the force exerted by a spring is proportional to its extension or compression: F = kx, where k is the spring constant."
+},
+{
+  term: "Gravitational Potential",
+  symbol: "V",
+  unit: "J kg⁻¹",
+  hl: true,
+  keywords: ["potential energy per mass", "field potential", "negative"],
+  synonyms: ["gravitational potential energy per unit mass"],
+  antonyms: ["zero potential reference"],
+  context: "Gravitational potential becomes more negative closer to a massive object.",
+  full: "The work done per unit mass in bringing a test mass from infinity to a point in a gravitational field. It is given by V = −GM/r."
+},
+{
+  term: "Gravitational Potential Energy",
+  symbol: "E_p",
+  unit: "J",
+  hl: false,
+  keywords: ["mgh", "position energy", "height"],
+  synonyms: ["GPE"],
+  antonyms: ["kinetic energy"],
+  context: "Lifting an object increases its gravitational potential energy relative to the ground.",
+  full: "The energy stored by an object due to its position in a gravitational field. Near Earth's surface, E_p = mgh."
+},
+{
+  term: "Electric Potential",
+  symbol: "V",
+  unit: "V",
+  hl: false,
+  keywords: ["energy per charge", "potential difference", "scalar"],
+  synonyms: ["electric potential difference"],
+  antonyms: ["zero potential"],
+  context: "Electric potential tells you how much energy each coulomb of charge has at a point.",
+  full: "Electric potential is the work done per unit charge in bringing a test charge from infinity to a point: V = W/q."
+},
+{
+  term: "Electric Current",
+  symbol: "I",
+  unit: "A",
+  hl: false,
+  keywords: ["charge flow", "I = Q/t", "ampere"],
+  synonyms: ["current"],
+  antonyms: ["no current"],
+  context: "A current of 1 ampere means 1 coulomb of charge passes a point every second.",
+  full: "The rate of flow of electric charge: I = Q/t. It is measured in amperes (A)."
+},
+{
+  term: "Ohm's Law",
+  symbol: "V = IR",
+  unit: "—",
+  hl: false,
+  keywords: ["linear relationship", "resistance", "proportional"],
+  synonyms: ["ohmic relation"],
+  antonyms: ["non-ohmic behavior"],
+  context: "In an ohmic conductor, doubling the voltage doubles the current.",
+  full: "Ohm’s Law states that the current through a conductor is proportional to the potential difference across it, provided temperature is constant."
+},
+{
+  term: "Wave Speed",
+  symbol: "v",
+  unit: "m s⁻¹",
+  hl: false,
+  keywords: ["v = fλ", "propagation speed", "medium"],
+  synonyms: ["phase velocity"],
+  antonyms: ["stationary wave"],
+  context: "If frequency increases while speed is constant, wavelength must decrease.",
+  full: "The speed at which a wave propagates through a medium, given by v = fλ."
+},
+{
+  term: "Refraction",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["change in speed", "bending", "Snell's law"],
+  synonyms: ["wave bending"],
+  antonyms: ["reflection"],
+  context: "Light bends toward the normal when entering a denser medium because it slows down.",
+  full: "The change in direction of a wave as it passes from one medium to another due to a change in speed."
+},
+{
+  term: "Snell's Law",
+  symbol: "n₁sinθ₁ = n₂sinθ₂",
+  unit: "—",
+  hl: false,
+  keywords: ["refraction", "angles", "refractive index"],
+  synonyms: ["law of refraction"],
+  antonyms: ["no refraction"],
+  context: "Snell's law predicts how much a ray bends when entering a new medium.",
+  full: "The relationship between angles of incidence and refraction when a wave passes between media with different refractive indices."
+},
+{
+  term: "Refractive Index",
+  symbol: "n",
+  unit: "dimensionless",
+  hl: false,
+  keywords: ["n = c/v", "optical density", "light speed"],
+  synonyms: ["index of refraction"],
+  antonyms: ["vacuum"],
+  context: "Glass has a higher refractive index than air, so light slows down more in glass.",
+  full: "The ratio of the speed of light in vacuum to its speed in a medium: n = c/v."
+},
+{
+  term: "Quantum Energy",
+  symbol: "E = hf",
+  unit: "J",
+  hl: false,
+  keywords: ["Planck's constant", "photon energy", "frequency"],
+  synonyms: ["photon energy"],
+  antonyms: ["continuous energy"],
+  context: "Higher-frequency light carries more energy per photon.",
+  full: "The energy of a photon is proportional to its frequency: E = hf, where h is Planck’s constant."
+},
+{
+  term: "Planck's Constant",
+  symbol: "h",
+  unit: "J s",
+  hl: false,
+  keywords: ["quantization", "E = hf", "fundamental constant"],
+  synonyms: ["Planck constant"],
+  antonyms: [],
+  context: "Planck's constant sets the scale at which quantum effects become significant.",
+  full: "A fundamental constant relating energy and frequency in quantum mechanics, appearing in E = hf and many other relations."
+},
+{
+  term: "Coulomb's Law",
+  symbol: "F = kq₁q₂/r²",
+  unit: "N",
+  hl: false,
+  keywords: ["inverse square", "electric force", "charges"],
+  synonyms: ["electrostatic force law"],
+  antonyms: ["neutral interaction"],
+  context: "Like charges repel and unlike charges attract with a force that decreases with distance squared.",
+  full: "The force between two point charges is proportional to the product of their charges and inversely proportional to the square of the distance between them."
+},
+{
+  term: "Capacitor",
+  symbol: "—",
+  unit: "—",
+  hl: true,
+  keywords: ["charge storage", "electric field", "plates"],
+  synonyms: ["charge storage device"],
+  antonyms: ["resistor"],
+  context: "A capacitor stores energy in the electric field between its plates.",
+  full: "A device that stores electric charge and energy, consisting of two conductors separated by an insulating material."
+},
+{
+  term: "Escape Velocity",
+  symbol: "v_e",
+  unit: "m s⁻¹",
+  hl: false,
+  keywords: ["gravitational escape", "no return", "planetary motion"],
+  synonyms: ["escape speed"],
+  antonyms: ["orbital velocity"],
+  context: "A rocket must reach escape velocity to leave Earth without further propulsion.",
+  full: "The minimum speed required for an object to escape the gravitational field of a body without further propulsion."
+},
+{
+  term: "Orbital Speed",
+  symbol: "v",
+  unit: "m s⁻¹",
+  hl: false,
+  keywords: ["circular motion", "gravity provides centripetal force"],
+  synonyms: ["orbital velocity"],
+  antonyms: ["escape velocity"],
+  context: "Satellites remain in orbit because their forward speed matches the curvature of Earth.",
+  full: "The speed required for an object to remain in circular orbit under gravity, given by v = √(GM/r)."
+},
+{
+  term: "Black Body",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["perfect absorber", "thermal radiation", "emission"],
+  synonyms: ["ideal emitter"],
+  antonyms: ["perfect reflector"],
+  context: "A black body absorbs all incident radiation and emits radiation depending only on its temperature.",
+  full: "An idealized object that absorbs all incident electromagnetic radiation and emits radiation with a spectrum determined solely by its temperature."
+},
+{
+  term: "Wien's Displacement Law",
+  symbol: "λ_max T = constant",
+  unit: "m K",
+  hl: false,
+  keywords: ["peak wavelength", "temperature relation", "thermal spectrum"],
+  synonyms: ["Wien's law"],
+  antonyms: ["Stefan–Boltzmann law"],
+  context: "Hotter objects emit radiation with shorter peak wavelengths.",
+  full: "The wavelength at which the emission of a black body is strongest is inversely proportional to its absolute temperature."
+},          
+  {
+  term: "Ideal Gas",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["no intermolecular forces", "point particles", "PV = nRT"],
+  synonyms: ["perfect gas"],
+  antonyms: ["real gas"],
+  context: "An ideal gas assumes particles do not interact except through elastic collisions, allowing simple relationships like PV = nRT.",
+  full: "A theoretical gas composed of identical point particles with no intermolecular forces and perfectly elastic collisions. It obeys the ideal gas equation PV = nRT under all conditions, making it a useful model for approximating real gases at low pressure and high temperature."
+  },
+  {
+  term: "Newton's Law of Gravitation",
+  symbol: "F = Gm₁m₂/r²",
+  unit: "N",
+  hl: false,
+  keywords: ["inverse square law", "universal attraction", "gravitational force"],
+  synonyms: ["law of universal gravitation"],
+  antonyms: ["no gravitational interaction"],
+  context: "Every mass attracts every other mass with a force that decreases with the square of the distance between them.",
+  full: "The force of attraction between two point masses is proportional to the product of their masses and inversely proportional to the square of the distance between them. It is given by F = Gm₁m₂/r², where G is the gravitational constant."
+  },
+ {
+  term: "Compton Effect",
+  symbol: "Δλ = h/(mc)(1 − cosθ)",
+  unit: "m",
+  hl: true,
+  keywords: ["photon scattering", "wavelength shift", "particle nature of light"],
+  synonyms: ["Compton scattering"],
+  antonyms: ["classical wave scattering"],
+  context: "X-rays scattered by electrons increase in wavelength, demonstrating that photons carry momentum.",
+  full: "The increase in wavelength of a photon when it scatters off a free or loosely bound electron. This effect provides strong evidence for the particle nature of light and is described by Δλ = h/(mc)(1 − cosθ)."
+ },
+ {
+  term: "Bohr Radius",
+  symbol: "a₀",
+  unit: "m",
+  hl: true,
+  keywords: ["hydrogen atom", "ground state radius", "quantized orbit"],
+  synonyms: ["atomic radius (Bohr model)"],
+  antonyms: ["classical orbit radius"],
+  context: "In the Bohr model, the electron in a hydrogen atom occupies a lowest orbit with radius a₀.",
+  full: "The characteristic radius of the lowest energy orbit of the electron in a hydrogen atom according to the Bohr model. It is approximately 5.29 × 10⁻¹¹ m and arises from quantization of angular momentum."
+  },
+  {
+    term: "Absolute Zero",
+    symbol: "0 K",
+    unit: "K",
+    hl: false,
+    keywords: ["−273.15 °C", "zero pressure", "minimum thermal energy"],
+    synonyms: ["0 K"],
+    antonyms: ["high temperature limit"],
+    context: "At absolute zero a gas would exert no pressure — molecules have ceased all translational motion, reaching the lowest possible internal energy.",
+    full: "The temperature at which an ideal gas would exert zero pressure and molecules possess minimum possible energy. Defined as 0 K (−273.15 °C). Unattainable in practice under the third law of thermodynamics, but approached asymptotically in cryogenic experiments."
+  },
+  {
+    term: "Acceleration",
+    symbol: "a",
+    unit: "m s⁻²",
+    hl: false,
+    keywords: ["rate of change of velocity", "vector", "Newton's second law", "velocity-time gradient"],
+    synonyms: ["rate of change of velocity"],
+    antonyms: ["constant velocity", "uniform velocity"],
+    context: "On a velocity-time graph, the acceleration is the gradient; if the gradient is zero, the object is moving with constant velocity.",
+    full: "The rate of change of velocity with respect to time: a = Δv/Δt. It is a vector quantity, so a change in speed, direction, or both produces acceleration. Newton's second law connects it to force through F = ma."
+  },
+  {
+    term: "Accuracy",
+    symbol: "—",
+    unit: "—",
+    hl: false,
+    keywords: ["closeness to true value", "systematic error", "correctness"],
+    synonyms: ["correctness", "trueness"],
+    antonyms: ["precision", "inaccuracy"],
+    context: "A balance that always reads 0.5 g too high is precise but not accurate — its readings cluster tightly but miss the true value.",
+    full: "An indication of how close a measurement is to the accepted true value. Accuracy is mainly degraded by systematic errors, whereas precision is mainly limited by random uncertainties."
+  },
+  {
+    term: "Activity",
+    symbol: "A",
+    unit: "Bq (s⁻¹)",
+    hl: false,
+    keywords: ["decay rate", "becquerel", "disintegrations per second", "radioactivity"],
+    synonyms: ["decay rate"],
+    antonyms: ["stability"],
+    context: "A sample with activity 100 Bq undergoes 100 nuclear disintegrations every second.",
+    full: "The rate at which a radioactive sample decays. It is the number of disintegrations per unit time and is given by A = λN. Measured in becquerels, where 1 Bq = 1 decay per second."
+  },
+  {
+    term: "Albedo",
+    symbol: "α",
+    unit: "dimensionless",
+    hl: false,
+    keywords: ["reflectivity", "fraction reflected", "climate", "surface coefficient"],
+    synonyms: ["reflectance", "reflectivity"],
+    antonyms: ["absorptivity"],
+    context: "Fresh snow has albedo about 0.9, meaning it reflects most incoming solar radiation, while dark ocean water has a much lower albedo.",
+    full: "The ratio of reflected radiation power to incident radiation power on a surface or planetary body. It ranges from 0 for a perfect absorber to 1 for a perfect reflector."
+  },
+  {
+    term: "Alpha Particle",
+    symbol: "α",
+    unit: "—",
+    hl: false,
+    keywords: ["helium nucleus", "2 protons 2 neutrons", "ionising"],
+    synonyms: ["helium-4 nucleus"],
+    antonyms: ["beta particle", "gamma photon"],
+    context: "An alpha particle fired at gold foil occasionally bounced straight back — revealing the existence of a tiny, dense nucleus.",
+    full: "A helium-4 nucleus consisting of 2 protons and 2 neutrons. It is highly ionising but has low penetrating power, being stopped by paper or a few centimetres of air."
+  },
+  {
+    term: "Amplitude",
+    symbol: "A",
+    unit: "m",
+    hl: false,
+    keywords: ["maximum displacement", "peak", "wave height"],
+    synonyms: ["peak displacement"],
+    antonyms: ["node"],
+    context: "Doubling a wave's amplitude quadruples its intensity because intensity is proportional to amplitude squared.",
+    full: "The maximum displacement of a particle from its equilibrium position. In simple harmonic motion, amplitude helps determine the total energy of the oscillation."
+  },
+  {
+    term: "Angular Acceleration",
+    symbol: "α",
+    unit: "rad s⁻²",
+    hl: true,
+    keywords: ["rate of angular velocity change", "torque"],
+    synonyms: ["rotational acceleration"],
+    antonyms: ["constant angular velocity"],
+    context: "Torque is required to produce angular acceleration, related by τ = Iα.",
+    full: "The rate of change of angular velocity with time: α = dω/dt. It is the rotational analogue of linear acceleration."
+  },
+  {
+    term: "Angular Frequency",
+    symbol: "ω",
+    unit: "rad s⁻¹",
+    hl: true,
+    keywords: ["circular motion", "rotation rate", "SHM", "phase"],
+    synonyms: ["angular speed"],
+    antonyms: ["linear frequency"],
+    context: "In SHM or circular motion, ω represents the rate of change of phase angle over time, with ω = 2πf.",
+    full: "The rate of change of angular displacement or wave phase. It is related to frequency and period by ω = 2πf = 2π/T."
+  },
+  {
+    term: "Angular Momentum",
+    symbol: "L",
+    unit: "kg m² s⁻¹",
+    hl: true,
+    keywords: ["L = Iω", "rotational momentum", "conserved quantity"],
+    synonyms: ["rotational momentum"],
+    antonyms: ["linear momentum"],
+    context: "A spinning neutron star conserves angular momentum as it collapses — shrinking radius drives up rotational speed.",
+    full: "For a rigid body, angular momentum is given by L = Iω. It is conserved when the net external torque on a system is zero."
+  },
+  {
+    term: "Angular Speed",
+    symbol: "ω",
+    unit: "rad s⁻¹",
+    hl: false,
+    keywords: ["radians per second", "ω = 2πf", "rotational speed"],
+    synonyms: ["angular frequency"],
+    antonyms: ["linear speed"],
+    context: "Earth's angular speed is 2π/86400 rad s⁻¹ — the same for every point on its surface.",
+    full: "The rate of change of angular displacement: ω = dθ/dt. It is related to frequency by ω = 2πf and to tangential speed by v = rω."
+  },
+  {
+    term: "Angular Velocity",
+    symbol: "ω",
+    unit: "rad s⁻¹",
+    hl: false,
+    keywords: ["circular motion", "rotation rate", "angle per second"],
+    synonyms: ["angular frequency"],
+    antonyms: ["linear velocity"],
+    context: "Even if an object moves at a constant speed in a circle, its angular velocity describes how fast it sweeps out angle.",
+    full: "The rate of change of angular displacement. It is related to linear velocity through v = ωr."
+  },
+  {
+    term: "Apparent Brightness",
+    symbol: "b",
+    unit: "W m⁻²",
+    hl: false,
+    keywords: ["intensity", "inverse square law", "observer distance"],
+    synonyms: ["flux"],
+    antonyms: ["luminosity"],
+    context: "Two stars may have the same luminosity, but the more distant one appears dimmer because its light spreads over a larger area.",
+    full: "The power received per unit area from a star at Earth. It is given by b = L/(4πd²)."
+  },
+  {
+    term: "Astronomical Unit",
+    symbol: "AU",
+    unit: "1.50 × 10¹¹ m",
+    hl: false,
+    keywords: ["Earth-Sun distance", "solar system scale", "average radius"],
+    synonyms: ["mean solar distance"],
+    antonyms: [],
+    context: "The astronomical unit is useful for distances within the solar system; Mars is about 1.5 AU from the Sun.",
+    full: "The average distance between Earth and the Sun."
+  },
+  {
+    term: "Binding Energy",
+    symbol: "BE",
+    unit: "MeV",
+    hl: false,
+    keywords: ["mass defect", "nuclear stability", "energy to separate nucleus", "strong nuclear force"],
+    synonyms: ["nuclear binding energy", "separation energy"],
+    antonyms: ["disintegration energy"],
+    context: "Iron-56 lies near the peak of the binding-energy-per-nucleon curve, which is why it is especially stable.",
+    full: "The energy required to completely separate a nucleus into its constituent nucleons, or equivalently the energy released when the nucleus forms. It is related to mass defect through E = Δmc²."
+  },
+  {
+    term: "Black Hole",
+    symbol: "—",
+    unit: "dimensionless",
+    hl: false,
+    keywords: ["singularity", "event horizon", "Schwarzschild radius"],
+    synonyms: ["gravitational singularity"],
+    antonyms: ["main sequence star"],
+    context: "Beyond the event horizon of a black hole, the escape velocity exceeds the speed of light, so nothing can escape.",
+    full: "A region of spacetime where gravity is so strong that nothing, not even light, can escape. It can form when a sufficiently massive stellar core collapses."
+  },
+  {
+    term: "Blue Giant",
+    symbol: "—",
+    unit: "dimensionless",
+    hl: false,
+    keywords: ["high mass", "high temperature", "short lifespan"],
+    synonyms: ["O-type star", "B-type star"],
+    antonyms: ["Red Dwarf"],
+    context: "Blue giants are extremely hot and luminous, but they burn through their fuel quickly and have short lifetimes.",
+    full: "A large, hot, bright star found toward the upper-left of the H–R diagram, typically with a high surface temperature and short lifespan."
+  },
+  {
+    term: "Capacitance",
+    symbol: "C",
+    unit: "F",
+    hl: true,
+    keywords: ["charge storage", "dielectric", "potential difference"],
+    synonyms: ["charge capacity"],
+    antonyms: ["resistance"],
+    context: "A capacitor with larger capacitance stores more charge for the same potential difference.",
+    full: "The ratio of charge stored on a capacitor to the potential difference across it: C = Q/V. It depends on plate geometry and the dielectric material."
+  },
+  {
+    term: "Centripetal Acceleration",
+    symbol: "a_c",
+    unit: "m s⁻²",
+    hl: false,
+    keywords: ["centre-seeking", "a = v²/r", "circular motion", "ω²r"],
+    synonyms: ["radial acceleration"],
+    antonyms: ["tangential acceleration"],
+    context: "An object moving in a circle at constant speed is still accelerating because its velocity direction changes toward the centre.",
+    full: "The acceleration directed toward the centre of a circular path. It is given by a_c = v²/r = ω²r."
+  },
+  {
+    term: "Chandrasekhar Limit",
+    symbol: "M_Ch",
+    unit: "≈ 1.4 M☉",
+    hl: false,
+    keywords: ["white dwarf limit", "electron degeneracy failure", "supernova"],
+    synonyms: ["critical white dwarf mass"],
+    antonyms: [],
+    context: "If a white dwarf exceeds about 1.4 solar masses, electron degeneracy pressure can no longer support it.",
+    full: "The maximum mass of a stable white dwarf. Beyond this mass, gravitational collapse occurs, often leading to a Type Ia supernova or further collapse."
+  },
+  {
+    term: "Constructive Interference",
+    symbol: "—",
+    unit: "—",
+    hl: false,
+    keywords: ["in phase", "amplitude addition", "path difference nλ"],
+    synonyms: ["reinforcement"],
+    antonyms: ["destructive interference"],
+    context: "Two speakers create loud spots where path difference equals an integer multiple of the wavelength.",
+    full: "Occurs when two waves meet in phase, so their displacements add and the resultant amplitude is larger."
+  },
+  {
+    term: "Decay Constant",
+    symbol: "λ",
+    unit: "s⁻¹",
+    hl: false,
+    keywords: ["probability of decay", "activity = λN", "exponential decay"],
+    synonyms: ["disintegration constant"],
+    antonyms: ["half-life"],
+    context: "A small decay constant means nuclei decay slowly, which is why some isotopes are useful for dating over long timescales.",
+    full: "The probability per unit time that a given nucleus will decay. It is related to half-life by T₁⁄₂ = ln2/λ."
+  },
+  {
+    term: "De Broglie Wavelength",
+    symbol: "λ = h/p",
+    unit: "m",
+    hl: true,
+    keywords: ["matter waves", "momentum", "quantum duality"],
+    synonyms: ["matter wavelength"],
+    antonyms: ["macroscopic position"],
+    context: "Electrons have measurable de Broglie wavelengths, which is why they can diffract through crystal lattices.",
+    full: "The wavelength associated with a moving particle, given by λ = h/p. It expresses the wave-like behaviour of matter."
+  },
+  {
+    term: "de Broglie Hypothesis",
+    symbol: "λ = h/p",
+    unit: "m",
+    hl: true,
+    keywords: ["matter waves", "wave-particle duality", "momentum wavelength"],
+    synonyms: ["matter wave hypothesis"],
+    antonyms: ["classical particle"],
+    context: "Electrons fired at a crystal diffract just like X-rays, revealing their wave nature.",
+    full: "The proposal that all moving particles have an associated wavelength λ = h/p. This is a cornerstone of wave-particle duality."
+  },
+  {
+    term: "Destructive Interference",
+    symbol: "—",
+    unit: "—",
+    hl: false,
+    keywords: ["out of phase", "amplitude cancellation", "path difference (n+½)λ"],
+    synonyms: ["cancellation"],
+    antonyms: ["constructive interference"],
+    context: "Noise-cancelling headphones work by generating waves that are out of phase with unwanted sound.",
+    full: "Occurs when two waves meet exactly out of phase so that their displacements subtract, reducing or cancelling the resultant amplitude."
+  },
+  {
+    term: "Diffraction",
+    symbol: "—",
+    unit: "—",
+    hl: false,
+    keywords: ["wave bending", "gap comparable to wavelength", "spreading", "aperture"],
+    synonyms: ["wave spreading"],
+    antonyms: ["straight-line propagation", "rectilinear propagation"],
+    context: "Diffraction is strongest when the size of an opening or obstacle is similar to the wavelength of the wave.",
+    full: "The spreading of a wave as it passes through an aperture or around an obstacle. It is most pronounced when the gap or obstacle size is comparable to the wavelength."
+  },
+  {
+    term: "Displacement",
+    symbol: "s",
+    unit: "m",
+    hl: false,
+    keywords: ["vector", "change in position", "shortest path"],
+    synonyms: ["positional shift"],
+    antonyms: ["distance"],
+    context: "Distance measures total path length, but displacement points straight from the start position to the end position.",
+    full: "The change in position of an object in a specified direction. It is a vector quantity represented by the straight-line separation from initial to final position."
+  },
+  {
+    term: "Doppler Effect",
+    symbol: "—",
+    unit: "—",
+    hl: false,
+    keywords: ["frequency shift", "source motion", "redshift", "relative motion"],
+    synonyms: ["Doppler shift"],
+    antonyms: ["stationary source"],
+    context: "A siren sounds higher in pitch as it approaches and lower in pitch as it recedes because the observed frequency changes.",
+    full: "The change in observed frequency or wavelength of a wave caused by relative motion between source and observer."
+  },
+  {
+    term: "Electric Field Strength",
+    symbol: "E",
+    unit: "N C⁻¹",
+    hl: false,
+    keywords: ["force per unit charge", "E = F/q", "vector field", "potential gradient"],
+    synonyms: ["electric field intensity", "electric intensity"],
+    antonyms: ["shielded region", "electrical shielding"],
+    context: "Electric field lines show the direction a positive test charge would be pushed, away from positive charges and toward negative charges.",
+    full: "The force per unit positive test charge at a point: E = F/q. For a point charge, E = kQ/r². It may also be expressed in V m⁻¹."
+  },
+  {
+    term: "Electromotive Force",
+    symbol: "ε",
+    unit: "V",
+    hl: false,
+    keywords: ["energy per unit charge", "battery", "open-circuit voltage", "source energy"],
+    synonyms: ["emf"],
+    antonyms: ["terminal voltage", "potential drop"],
+    context: "A battery's emf is the energy it supplies per coulomb of charge, while the terminal voltage may be lower when current flows.",
+    full: "The total energy supplied per unit charge by a source, or the work done per unit charge in driving charge around a complete circuit. Under open-circuit conditions, emf equals the terminal voltage."
+  },
+  {
+    term: "Emissivity",
+    symbol: "ε",
+    unit: "dimensionless",
+    hl: false,
+    keywords: ["black body", "thermal radiation", "Stefan-Boltzmann"],
+    synonyms: ["radiative efficiency"],
+    antonyms: [],
+    context: "A perfect black body has emissivity 1, whereas real surfaces usually emit less efficiently.",
+    full: "The ratio of the thermal radiation emitted by a surface to that emitted by an ideal black body at the same temperature."
+  },
+  {
+    term: "Energy",
+    symbol: "E",
+    unit: "J",
+    hl: false,
+    keywords: ["capacity to do work", "joule", "conserved quantity"],
+    synonyms: ["stored work"],
+    antonyms: ["entropy"],
+    context: "A 100 W bulb converts 100 joules of electrical energy into light and heat every second.",
+    full: "The capacity to do work or produce change. In isolated systems, total energy is conserved."
+  },
+  {
+    term: "Entropy",
+    symbol: "S",
+    unit: "J K⁻¹",
+    hl: false,
+    keywords: ["disorder", "second law", "irreversibility"],
+    synonyms: ["disorder"],
+    antonyms: ["order"],
+    context: "When ice melts in warm water, entropy increases and the process does not spontaneously reverse.",
+    full: "A thermodynamic state function measuring the dispersal of energy or degree of disorder. It increases in spontaneous irreversible processes."
+  },
+  {
+    term: "Faraday's Law",
+    symbol: "ε = −NΔΦ/Δt",
+    unit: "V",
+    hl: false,
+    keywords: ["changing flux", "induced emf", "electromagnetic induction"],
+    synonyms: ["induction law"],
+    antonyms: ["static field"],
+    context: "Rotating a coil in a magnetic field changes the magnetic flux linkage and induces an emf.",
+    full: "The induced emf in a circuit is proportional to the rate of change of magnetic flux linkage through the circuit."
+  },
+  {
+    term: "First Law of Thermodynamics",
+    symbol: "ΔU = Q − W",
+    unit: "J",
+    hl: true,
+    keywords: ["energy conservation", "heat and work", "internal energy"],
+    synonyms: ["conservation of energy"],
+    antonyms: ["Second Law"],
+    context: "Heating a gas increases its internal energy unless some of that energy leaves as work during expansion.",
+    full: "The change in internal energy of a system equals the heat added to the system minus the work done by the system."
+  },
+  {
+    term: "Force",
+    symbol: "F",
+    unit: "N",
+    hl: false,
+    keywords: ["push or pull", "vector", "Newton's second law"],
+    synonyms: ["interaction"],
+    antonyms: ["equilibrium"],
+    context: "A net force acting on a trolley changes its motion by producing acceleration.",
+    full: "A vector quantity representing an interaction that can change an object's motion. For constant mass, F = ma."
+  },
+  {
+    term: "Frequency",
+    symbol: "f",
+    unit: "Hz",
+    hl: false,
+    keywords: ["oscillations per second", "f = 1/T", "hertz", "cycles per second"],
+    synonyms: ["repetition rate", "temporal frequency"],
+    antonyms: ["period"],
+    context: "A wave with frequency 5 Hz completes five full oscillations every second.",
+    full: "The number of complete cycles or oscillations per unit time. It is the reciprocal of period, f = 1/T, and is related to wave speed by v = fλ."
+  },
+  {
+    term: "Galaxy",
+    symbol: "—",
+    unit: "dimensionless",
+    hl: false,
+    keywords: ["gravitationally bound", "stars and dust", "dark matter"],
+    synonyms: ["star system"],
+    antonyms: ["nebula"],
+    context: "The Milky Way is a galaxy containing hundreds of billions of stars along with gas, dust, and dark matter.",
+    full: "A massive gravitationally bound system consisting of stars, stellar remnants, gas, dust, and dark matter."
+  },
+  {
+    term: "Gravitational Field Strength",
+    symbol: "g",
+    unit: "N kg⁻¹",
+    hl: false,
+    keywords: ["force per unit mass", "g = 9.81", "field strength", "free-fall acceleration"],
+    synonyms: ["gravitational acceleration", "local gravity"],
+    antonyms: ["weightlessness"],
+    context: "On the Moon, gravitational field strength is much smaller than on Earth, so astronauts weigh less there.",
+    full: "The gravitational force per unit mass at a point in a gravitational field. It may be written as g = F/m or g = GM/r², and is numerically equal to the free-fall acceleration."
+  },
+  {
+    term: "Greenhouse Effect",
+    symbol: "—",
+    unit: "—",
+    hl: false,
+    keywords: ["IR absorption", "CO₂ CH₄ H₂O", "atmospheric warming"],
+    synonyms: ["atmospheric blanketing"],
+    antonyms: ["albedo"],
+    context: "Greenhouse gases absorb outgoing infrared radiation and re-emit some of it back toward Earth's surface, increasing surface temperature.",
+    full: "The warming of a planet's surface and lower atmosphere caused by gases that absorb and re-radiate long-wavelength infrared radiation."
+  },
+  {
+    term: "Half-life",
+    symbol: "T½",
+    unit: "s",
+    hl: false,
+    keywords: ["exponential decay", "time to halve", "radioactivity"],
+    synonyms: ["radioactive half-life"],
+    antonyms: ["decay constant"],
+    context: "After one half-life, half the radioactive nuclei remain; after two, one quarter remain.",
+    full: "The time taken for the number of radioactive nuclei, or the activity of a sample, to fall to half its initial value."
+  },
+  {
+    term: "Heisenberg Uncertainty Principle",
+    symbol: "ΔxΔp ≥ ℏ/2",
+    unit: "J s",
+    hl: true,
+    keywords: ["conjugate quantities", "position-momentum", "quantum limit", "measurement limit"],
+    synonyms: ["indeterminacy principle"],
+    antonyms: ["classical determinism", "determinism"],
+    context: "The more precisely a particle's position is known, the less precisely its momentum can be known.",
+    full: "A fundamental principle of quantum mechanics stating that the uncertainties in certain pairs of conjugate variables, such as position and momentum, cannot both be made arbitrarily small. For position and momentum, ΔxΔp ≥ ℏ/2."
+  },
+  {
+    term: "Hertzsprung–Russell Diagram",
+    symbol: "H–R",
+    unit: "luminosity vs temperature",
+    hl: true,
+    keywords: ["luminosity vs temperature", "main sequence", "stellar classification", "evolutionary tracks"],
+    synonyms: ["H-R diagram", "Hertzsprung-Russell Diagram", "color-magnitude diagram"],
+    antonyms: [],
+    context: "A star's position on the H–R diagram reveals its temperature, luminosity, and often its evolutionary stage.",
+    full: "A plot of stellar luminosity or absolute magnitude against surface temperature or spectral class. It is one of the main tools for understanding stellar structure and evolution."
+  },
+  {
+    term: "Hydrostatic Equilibrium",
+    symbol: "—",
+    unit: "Pa",
+    hl: false,
+    keywords: ["balanced forces", "stellar stability", "thermal pressure"],
+    synonyms: ["gravitational stability"],
+    antonyms: ["stellar collapse", "supernova"],
+    context: "A star remains stable while inward gravity is exactly balanced by outward pressure from hot gas and radiation.",
+    full: "The state in which the inward gravitational force in a star is exactly balanced by the outward pressure gradient."
+  },
+  {
+    term: "Impulse",
+    symbol: "J",
+    unit: "N s",
+    hl: false,
+    keywords: ["change in momentum", "force-time area", "collision", "J = FΔt"],
+    synonyms: ["change in momentum", "momentum change"],
+    antonyms: ["constant momentum", "static inertia"],
+    context: "Airbags increase the time over which the passenger's momentum changes, reducing the average impact force while keeping impulse the same.",
+    full: "The product of force and the time interval for which it acts, equal to the change in linear momentum: J = Δp = FΔt."
+  },
+  {
+    term: "Intensity",
+    symbol: "I",
+    unit: "W m⁻²",
+    hl: false,
+    keywords: ["power per area", "I ∝ A²", "inverse-square law"],
+    synonyms: ["irradiance"],
+    antonyms: ["low amplitude"],
+    context: "Doubling the distance from a point source reduces intensity to one quarter because the same power spreads over four times the area.",
+    full: "The power incident per unit area normal to the direction of propagation: I = P/A."
+  },
+  {
+    term: "Internal Energy",
+    symbol: "U",
+    unit: "J",
+    hl: false,
+    keywords: ["microscopic kinetic energy", "potential energy", "random motion"],
+    synonyms: ["thermal energy storage"],
+    antonyms: ["mechanical energy"],
+    context: "For an ideal gas, internal energy is entirely due to random molecular kinetic energy because intermolecular potential energy is neglected.",
+    full: "The total microscopic energy stored in a system, made up of the random kinetic and potential energies of its particles."
+  },
+  {
+    term: "Kinetic Energy",
+    symbol: "E_K",
+    unit: "J",
+    hl: false,
+    keywords: ["½mv²", "motion energy", "scalar"],
+    synonyms: ["translational KE"],
+    antonyms: ["potential energy"],
+    context: "A moving car has kinetic energy that must be dissipated as heat when the brakes stop it.",
+    full: "The energy possessed by an object because of its motion, given by E_K = ½mv²."
+  },
+  {
+    term: "Length Contraction",
+    symbol: "L = L₀/γ",
+    unit: "m",
+    hl: true,
+    keywords: ["Lorentz contraction", "proper length", "relativistic shortening"],
+    synonyms: ["relativistic contraction"],
+    antonyms: ["proper length"],
+    context: "A fast-moving object appears shortened in the direction of motion when viewed from another inertial frame.",
+    full: "A relativistic effect in which an object moving relative to an observer is measured to be shorter along the direction of motion than its proper length."
+  },
+  {
+    term: "Lenz's Law",
+    symbol: "—",
+    unit: "—",
+    hl: false,
+    keywords: ["opposes change", "induced current", "conservation of energy"],
+    synonyms: ["induction opposition", "magnetic opposition"],
+    antonyms: ["positive feedback"],
+    context: "The induced current in a coil always creates a magnetic field that opposes the change in flux that produced it.",
+    full: "The direction of an induced emf or current is such that the magnetic field it creates opposes the change in magnetic flux that caused it. This is reflected in the negative sign in Faraday's law."
+  },
+  {
+    term: "Light Year",
+    symbol: "ly",
+    unit: "9.46 × 10¹⁵ m",
+    hl: false,
+    keywords: ["distance", "speed of light", "interstellar scale"],
+    synonyms: [],
+    antonyms: [],
+    context: "Looking at a star 100 light years away means seeing the star as it was 100 years ago.",
+    full: "The distance light travels in vacuum in one Julian year."
+  },
+  {
+    term: "Linear Momentum",
+    symbol: "p",
+    unit: "kg m s⁻¹",
+    hl: false,
+    keywords: ["p = mv", "vector", "conserved"],
+    synonyms: ["momentum"],
+    antonyms: ["angular momentum"],
+    context: "In the absence of external forces, total linear momentum is conserved during a collision.",
+    full: "The product of mass and velocity: p = mv. It is a vector quantity and obeys F = dp/dt."
+  },
+  {
+    term: "Lorentz Factor",
+    symbol: "γ",
+    unit: "dimensionless",
+    hl: true,
+    keywords: ["γ = 1/√(1−v²/c²)", "relativistic scaling", "approaches ∞ at c"],
+    synonyms: ["gamma factor"],
+    antonyms: ["γ = 1"],
+    context: "At high speeds, the Lorentz factor determines how strongly time dilation and length contraction appear.",
+    full: "The dimensionless factor γ = 1/√(1−v²/c²), which sets the size of relativistic effects such as time dilation and length contraction."
+  },
+  {
+    term: "Magnetic Flux",
+    symbol: "Φ",
+    unit: "Wb",
+    hl: true,
+    keywords: ["Φ = BAcosθ", "field through area", "weber", "B-field"],
+    synonyms: ["magnetic flow"],
+    antonyms: ["zero flux"],
+    context: "Magnetic flux is greatest when the magnetic field is perpendicular to the surface area.",
+    full: "A measure of the magnetic field passing through a surface, given by Φ = BA cosθ for a uniform field across a flat area."
+  },
+  {
+    term: "Magnetic Flux Linkage",
+    symbol: "NΦ",
+    unit: "Wb",
+    hl: true,
+    keywords: ["Faraday's Law", "electromagnetic induction", "coil turns"],
+    synonyms: ["total magnetic flux"],
+    antonyms: [],
+    context: "The induced emf in a coil depends on how quickly the total magnetic flux linkage changes.",
+    full: "The product of the number of turns in a coil and the magnetic flux through each turn: NΦ. It is the quantity that appears in Faraday's law."
+  },
+  {
+    term: "Mass Defect",
+    symbol: "Δm",
+    unit: "kg or u",
+    hl: false,
+    keywords: ["binding energy", "missing mass", "E = Δmc²"],
+    synonyms: ["nuclear mass defect"],
+    antonyms: ["mass excess"],
+    context: "A nucleus has less mass than the separate free nucleons that make it up; the difference is the mass defect.",
+    full: "The difference between the total mass of the separate nucleons and the actual mass of the nucleus. This missing mass corresponds to binding energy through E = Δmc²."
+  },
+  {
+    term: "Matter Waves",
+    symbol: "λ = h/p",
+    unit: "m",
+    hl: true,
+    keywords: ["de Broglie", "electron diffraction", "quantum"],
+    synonyms: ["de Broglie waves"],
+    antonyms: ["classical particle"],
+    context: "Electron microscopes rely on matter waves to resolve structures much smaller than ordinary light microscopes can.",
+    full: "The wave behaviour associated with moving particles. All particles have an associated wavelength λ = h/p."
+  },
+  {
+    term: "Neutron Star",
+    symbol: "—",
+    unit: "dimensionless",
+    hl: false,
+    keywords: ["supernova remnant", "neutron degeneracy", "extreme density"],
+    synonyms: ["pulsar"],
+    antonyms: ["white dwarf", "black hole"],
+    context: "A neutron star is so dense that a teaspoon of its material would have an enormous mass on Earth.",
+    full: "The collapsed core of a massive star left after a supernova. It is supported mainly by neutron degeneracy pressure."
+  },
+  {
+    term: "Newton's First Law",
+    symbol: "—",
+    unit: "—",
+    hl: false,
+    keywords: ["inertia", "uniform motion", "no net force"],
+    synonyms: ["law of inertia"],
+    antonyms: ["Newton's Second Law"],
+    context: "A puck on nearly frictionless ice keeps moving at constant velocity unless a net external force acts.",
+    full: "An object remains at rest or moves with constant velocity unless acted on by a net external force."
+  },
+  {
+    term: "Newton's Second Law",
+    symbol: "F = ma",
+    unit: "N",
+    hl: false,
+    keywords: ["F = dp/dt", "acceleration proportional to force", "net force"],
+    synonyms: ["law of acceleration"],
+    antonyms: ["Newton's First Law"],
+    context: "Doubling the net force on the same mass doubles its acceleration.",
+    full: "The net force on an object equals the rate of change of momentum. For constant mass, this reduces to F = ma."
+  },
+  {
+    term: "Newton's Third Law",
+    symbol: "F_AB = −F_BA",
+    unit: "N",
+    hl: false,
+    keywords: ["action-reaction", "equal and opposite", "pairs"],
+    synonyms: ["law of action-reaction"],
+    antonyms: ["no reaction"],
+    context: "A rocket pushes gas backwards, and the gas pushes the rocket forwards with equal magnitude and opposite direction.",
+    full: "Whenever one object exerts a force on another, the second exerts an equal and opposite force on the first."
+  },
+  {
+    term: "Oppenheimer-Volkoff Limit",
+    symbol: "M_OV",
+    unit: "≈ 2–3 M☉",
+    hl: true,
+    keywords: ["neutron star limit", "black hole collapse", "neutron degeneracy"],
+    synonyms: ["Tolman-Oppenheimer-Volkoff limit"],
+    antonyms: ["Chandrasekhar Limit"],
+    context: "If a neutron star's mass exceeds this limit, neutron degeneracy pressure cannot prevent collapse into a black hole.",
+    full: "The upper mass limit for a stable neutron star."
+  },
+  {
+    term: "Parsec",
+    symbol: "pc",
+    unit: "3.08 × 10¹⁶ m",
+    hl: false,
+    keywords: ["parallax second", "distance measure", "triangulation"],
+    synonyms: ["parallactic second"],
+    antonyms: [],
+    context: "A star is one parsec away if its parallax angle is one arcsecond.",
+    full: "The distance at which an astronomical unit subtends an angle of one arcsecond. One parsec is approximately 3.26 light years."
+  },
+  {
+    term: "Photoelectric Effect",
+    symbol: "—",
+    unit: "—",
+    hl: false,
+    keywords: ["photon ejects electron", "threshold", "work function"],
+    synonyms: ["photoemission"],
+    antonyms: ["thermal emission"],
+    context: "Ultraviolet light can eject electrons from zinc, while red light cannot if its frequency is below the threshold.",
+    full: "The emission of electrons from a metal surface when electromagnetic radiation above a threshold frequency is incident on it."
+  },
+  {
+    term: "Photon",
+    symbol: "γ",
+    unit: "J or eV",
+    hl: false,
+    keywords: ["quantum of light", "wave-particle duality", "Planck's constant"],
+    synonyms: ["light quantum"],
+    antonyms: ["continuous wave"],
+    context: "In the photoelectric effect, a single photon transfers all its energy to a single electron.",
+    full: "A discrete quantum of electromagnetic radiation. A photon has zero rest mass and travels at the speed of light in vacuum."
+  },
+  {
+    term: "Power",
+    symbol: "P",
+    unit: "W",
+    hl: false,
+    keywords: ["rate of work", "energy per second", "scalar"],
+    synonyms: ["work rate"],
+    antonyms: ["energy storage"],
+    context: "Power tells you how quickly work is done or energy is transferred.",
+    full: "The rate at which work is done or energy is transferred. It is given by P = W/t and, in many mechanical situations, P = Fv."
+  },
+  {
+    term: "Proper Length",
+    symbol: "L₀",
+    unit: "m",
+    hl: true,
+    keywords: ["rest frame", "maximum length", "reference"],
+    synonyms: ["rest length"],
+    antonyms: ["contracted length"],
+    context: "An object's longest measured length is obtained in the frame where it is at rest.",
+    full: "The length of an object measured in the inertial frame in which the object is at rest."
+  },
+  {
+    term: "Proper Time Interval",
+    symbol: "Δt₀",
+    unit: "s",
+    hl: true,
+    keywords: ["rest frame time", "minimum interval", "wristwatch time"],
+    synonyms: ["eigentime"],
+    antonyms: ["dilated time"],
+    context: "A particle's own clock measures the proper time between two events occurring at the same place in its frame.",
+    full: "The time interval between two events measured in the frame where the events occur at the same spatial location."
+  },
+  {
+    term: "Radiation Pressure",
+    symbol: "P_rad",
+    unit: "Pa",
+    hl: true,
+    keywords: ["photon momentum", "Eddington limit", "massive stars"],
+    synonyms: ["photon pressure"],
+    antonyms: ["gas pressure"],
+    context: "In very massive stars, radiation pressure from photons can contribute strongly to supporting the star against gravity.",
+    full: "The pressure exerted by electromagnetic radiation due to the transfer of photon momentum."
+  },
+  {
+    term: "Red Dwarf",
+    symbol: "—",
+    unit: "dimensionless",
+    hl: false,
+    keywords: ["low mass", "M-type", "convective", "main sequence"],
+    synonyms: ["low-mass star"],
+    antonyms: ["Blue Giant", "Red Supergiant"],
+    context: "Red dwarfs burn hydrogen very slowly and can remain on the main sequence for extremely long times.",
+    full: "A small, cool, low-mass main-sequence star with low luminosity and a very long lifetime."
+  },
+  {
+    term: "Red Giant",
+    symbol: "—",
+    unit: "dimensionless",
+    hl: false,
+    keywords: ["helium flash", "shell burning", "increased radius"],
+    synonyms: ["post-main sequence"],
+    antonyms: ["main sequence"],
+    context: "When a Sun-like star exhausts hydrogen in its core, it expands and cools at the surface to become a red giant.",
+    full: "A luminous, expanded star in a later stage of stellar evolution after core hydrogen has been exhausted."
+  },
+  {
+    term: "Resistance",
+    symbol: "R",
+    unit: "Ω",
+    hl: false,
+    keywords: ["V/I ratio", "ohm", "opposition"],
+    synonyms: ["electrical resistance"],
+    antonyms: ["conductance"],
+    context: "For an ohmic conductor at constant temperature, the resistance is the ratio of potential difference to current.",
+    full: "The opposition a component offers to electric current, defined by R = V/I."
+  },
+  {
+    term: "Self-Gravity",
+    symbol: "F_g",
+    unit: "N",
+    hl: true,
+    keywords: ["gravitational binding", "nebular collapse", "Jeans criterion"],
+    synonyms: ["inward gravitational pull"],
+    antonyms: ["internal pressure"],
+    context: "Self-gravity causes a nebula to contract when gravitational attraction overcomes internal pressure.",
+    full: "The gravitational attraction an object exerts on its own mass, tending to pull matter toward its centre."
+  },
+  {
+    term: "Simple Harmonic Motion",
+    symbol: "a = −ω²x",
+    unit: "—",
+    hl: false,
+    keywords: ["restoring force", "acceleration proportional and opposite to displacement", "sine wave"],
+    synonyms: ["SHM"],
+    antonyms: ["damped oscillation"],
+    context: "A mass on a spring oscillates so that its acceleration always points back toward equilibrium and is proportional to displacement.",
+    full: "Oscillatory motion in which acceleration is directly proportional to displacement from equilibrium and opposite in direction."
+  },
+  {
+    term: "Solar Constant",
+    symbol: "S",
+    unit: "W m⁻²",
+    hl: false,
+    keywords: ["intensity", "inverse square law", "Earth's orbit"],
+    synonyms: ["total solar irradiance"],
+    antonyms: [],
+    context: "The solar constant is the solar power per unit area received at the top of Earth's atmosphere on a surface perpendicular to the Sun's rays.",
+    full: "The solar radiation energy received per unit area per unit time at Earth's mean orbital distance from the Sun."
+  },
+  {
+    term: "Special Theory of Relativity",
+    symbol: "—",
+    unit: "—",
+    hl: true,
+    keywords: ["constant c", "inertial frames", "Lorentz"],
+    synonyms: ["special relativity"],
+    antonyms: ["Galilean relativity"],
+    context: "The constancy of the speed of light for all inertial observers leads directly to time dilation and length contraction.",
+    full: "Einstein's theory based on two postulates: the laws of physics are the same in all inertial frames, and the speed of light in vacuum is the same for all inertial observers."
+  },
+  {
+    term: "Specific Heat Capacity",
+    symbol: "c",
+    unit: "J kg⁻¹ K⁻¹",
+    hl: false,
+    keywords: ["thermal energy", "temperature change", "internal energy"],
+    synonyms: ["thermal capacity per unit mass"],
+    antonyms: ["thermal conductivity"],
+    context: "Water has a high specific heat capacity, so a lot of energy is needed to raise its temperature.",
+    full: "The amount of energy required to raise the temperature of one kilogram of a substance by one kelvin. It is used in Q = mcΔT."
+  },
+  {
+    term: "Specific Latent Heat",
+    symbol: "L",
+    unit: "J kg⁻¹",
+    hl: false,
+    keywords: ["phase change", "constant temperature", "fusion", "vaporization"],
+    synonyms: ["heat of transformation"],
+    antonyms: ["sensible heat"],
+    context: "During melting or boiling, energy changes the state of matter without raising the temperature.",
+    full: "The energy per unit mass needed to change the phase of a substance at constant temperature."
+  },
+  {
+    term: "Standing Wave",
+    symbol: "—",
+    unit: "—",
+    hl: false,
+    keywords: ["nodes", "antinodes", "no energy transfer", "resonance"],
+    synonyms: ["stationary wave"],
+    antonyms: ["progressive wave"],
+    context: "A standing wave forms when two identical waves travel in opposite directions and interfere.",
+    full: "A wave pattern with fixed nodes and antinodes, produced by the superposition of two waves of equal frequency and amplitude travelling in opposite directions."
+  },
+  {
+    term: "Stefan–Boltzmann Law",
+    symbol: "P = εσAT⁴",
+    unit: "W",
+    hl: false,
+    keywords: ["temperature to the fourth", "black body power", "Stefan constant"],
+    synonyms: ["Stefan's law"],
+    antonyms: ["Wien's law"],
+    context: "If temperature doubles, the radiated power of a black body increases by a factor of sixteen.",
+    full: "The total power radiated by a body is proportional to its surface area, emissivity, and the fourth power of its absolute temperature."
+  },
+  {
+    term: "Superposition",
+    symbol: "—",
+    unit: "m",
+    hl: false,
+    keywords: ["interference", "vector sum", "resultant displacement"],
+    synonyms: ["wave interference"],
+    antonyms: ["cancellation"],
+    context: "When two waves meet, the displacement at any point is the algebraic sum of their individual displacements.",
+    full: "The principle that when two or more waves overlap, the resultant displacement is the sum of the individual displacements."
+  },
+  {
+    term: "Terminal Velocity",
+    symbol: "v_t",
+    unit: "m s⁻¹",
+    hl: false,
+    keywords: ["drag force", "weight", "zero acceleration", "equilibrium"],
+    synonyms: ["settling velocity"],
+    antonyms: ["free fall in vacuum"],
+    context: "A falling object reaches terminal velocity when drag exactly balances weight so the net force becomes zero.",
+    full: "The constant speed reached by a falling object when resistive forces balance its weight, preventing further acceleration."
+  },
+  {
+    term: "Time Constant",
+    symbol: "τ",
+    unit: "s",
+    hl: true,
+    keywords: ["RC circuit", "exponential decay", "discharge rate"],
+    synonyms: ["relaxation time"],
+    antonyms: [],
+    context: "In an RC circuit, the time constant sets how quickly charge and current rise or fall exponentially.",
+    full: "The characteristic time for current, charge, or voltage in an RC circuit to change by a factor of e."
+  },
+  {
+    term: "Time Dilation",
+    symbol: "Δt = γΔt₀",
+    unit: "s",
+    hl: true,
+    keywords: ["moving clocks run slow", "proper time", "gamma"],
+    synonyms: ["relativistic dilation"],
+    antonyms: ["proper time"],
+    context: "A fast-moving clock is measured by a stationary observer to tick more slowly than a clock at rest in that observer's frame.",
+    full: "A relativistic effect in which the time interval between events is measured to be longer in a frame where the clock is moving."
+  },
+  {
+    term: "Torque",
+    symbol: "τ",
+    unit: "N m",
+    hl: true,
+    keywords: ["turning effect", "τ = Fr sinθ", "rotational force"],
+    synonyms: ["moment"],
+    antonyms: ["equilibrium"],
+    context: "Using a longer wrench increases the turning effect for the same applied force.",
+    full: "The turning effect of a force about a pivot or axis, given by the vector product τ = r × F."
+  },
+  {
+    term: "Wave–Particle Duality",
+    symbol: "—",
+    unit: "—",
+    hl: true,
+    keywords: ["photon and wave", "electron diffraction", "complementarity"],
+    synonyms: ["duality"],
+    antonyms: ["classical particle"],
+    context: "Electrons behave like particles in some experiments and like waves in others.",
+    full: "The principle that matter and radiation display both wave-like and particle-like properties depending on the experiment."
+  },
+  {
+    term: "Wavelength",
+    symbol: "λ",
+    unit: "m",
+    hl: false,
+    keywords: ["peak to peak", "spatial cycle", "wave speed"],
+    synonyms: ["cycle length"],
+    antonyms: ["wave number"],
+    context: "Wavelength is the distance between adjacent points in phase, such as crest to crest.",
+    full: "The distance between successive points in phase on a wave. It is related to wave speed and frequency by v = fλ."
+  },
+  {
+    term: "White Dwarf",
+    symbol: "—",
+    unit: "dimensionless",
+    hl: false,
+    keywords: ["electron degeneracy", "low mass remnant", "planetary nebula"],
+    synonyms: ["degenerate dwarf"],
+    antonyms: ["neutron star", "red giant"],
+    context: "After a Sun-like star sheds its outer layers, its hot dense core remains as a white dwarf.",
+    full: "The compact remnant of a low- or intermediate-mass star, supported against collapse by electron degeneracy pressure."
+  },
+  {
+    term: "Work",
+    symbol: "W",
+    unit: "J",
+    hl: false,
+    keywords: ["force × displacement", "energy transfer", "scalar"],
+    synonyms: ["energy transferred", "mechanical work"],
+    antonyms: ["no work", "static force"],
+    context: "Work is done when a force causes displacement in its direction; carrying a bag horizontally does no work against gravity.",
+    full: "The energy transferred when a force acts through a displacement. For a constant force, W = Fs cosθ."
+  },
+  {
+  term: "Apparent Magnitude",
+  symbol: "m",
+  unit: "dimensionless",
+  hl: false,
+  keywords: ["observed brightness", "logarithmic scale", "seen from Earth"],
+  synonyms: ["visual magnitude"],
+  antonyms: ["Absolute Magnitude"],
+  context: "A star with a lower apparent magnitude appears brighter in the night sky, even though it may actually be farther away or less luminous than another star.",
+  full: "A measure of how bright a celestial object appears when viewed from Earth. It depends on both the object's intrinsic luminosity and its distance from the observer, and is measured on a logarithmic scale where smaller or more negative values indicate greater brightness."
+},
+{
+  term: "Baryon",
+  symbol: "—",
+  unit: "—",
+  hl: true,
+  keywords: ["hadron", "three quarks", "proton neutron"],
+  synonyms: ["heavy hadron"],
+  antonyms: ["lepton"],
+  context: "Protons and neutrons are baryons because they are made of three quarks and experience the strong interaction.",
+  full: "A baryon is a subatomic particle made of three quarks. Baryons are hadrons, so they experience the strong nuclear interaction. The most familiar baryons are the proton and neutron."
+},
+{
+  term: "Center of Mass",
+  symbol: "—",
+  unit: "m",
+  hl: false,
+  keywords: ["balance point", "mass distribution", "weighted average position"],
+  synonyms: ["centre of mass"],
+  antonyms: ["geometric center"],
+  context: "An irregular object can still balance perfectly if supported at its center of mass, even if that point is not at its geometric center.",
+  full: "The point at which the entire mass of an object or system may be considered to act. It is the weighted average position of all the mass in the system and is especially useful when analysing motion and equilibrium."
+},
+{
+  term: "Couple",
+  symbol: "—",
+  unit: "N m",
+  hl: true,
+  keywords: ["equal and opposite forces", "rotation only", "zero resultant force"],
+  synonyms: ["torque pair"],
+  antonyms: ["single force"],
+  context: "Turning a steering wheel involves a couple: two equal and opposite forces act at different points and produce rotation without translation.",
+  full: "A pair of equal and opposite parallel forces acting on an object at different points. The resultant force is zero, but the forces produce a turning effect that causes rotation."
+},
+{
+  term: "Dynamic Equilibrium",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["constant velocity", "zero resultant force", "balanced forces"],
+  synonyms: ["uniform motion equilibrium"],
+  antonyms: ["acceleration", "static equilibrium"],
+  context: "In the oil-drop experiment, a droplet can fall at constant speed when viscous drag and electric or gravitational forces balance exactly.",
+  full: "A state in which an object moves with constant velocity because the resultant force acting on it is zero. The forces are balanced, so there is no acceleration even though the object is in motion."
+},
+{
+  term: "Galilean Law of Addition of Speeds",
+  symbol: "u' = u + v",
+  unit: "m s⁻¹",
+  hl: true,
+  keywords: ["classical relativity", "relative velocity", "Newtonian mechanics"],
+  synonyms: ["Galilean velocity addition"],
+  antonyms: ["Lorentz addition law"],
+  context: "If a train moves at 20 m s⁻¹ and a passenger throws a ball forward at 5 m s⁻¹ relative to the train, a ground observer classically measures the ball's speed as 25 m s⁻¹.",
+  full: "The classical rule for combining velocities in Newtonian mechanics. If an object moves with velocity u in one frame and that frame moves with velocity v relative to another, the object's velocity in the second frame is u + v. This works well at low speeds but breaks down near the speed of light."
+},
+{
+  term: "Lepton",
+  symbol: "—",
+  unit: "—",
+  hl: true,
+  keywords: ["fundamental particle", "does not feel strong force", "electron neutrino"],
+  synonyms: ["elementary fermion"],
+  antonyms: ["baryon", "hadron"],
+  context: "Electrons and neutrinos are leptons because they are fundamental particles and do not participate in the strong interaction.",
+  full: "A lepton is a fundamental particle that does not experience the strong nuclear force. Examples include the electron, muon, tau, and their associated neutrinos."
+},
+{
+  term: "Lorentz Addition Law",
+  symbol: "u' = (u + v)/(1 + uv/c²)",
+  unit: "m s⁻¹",
+  hl: true,
+  keywords: ["relativistic velocity", "speed of light limit", "special relativity"],
+  synonyms: ["relativistic velocity addition"],
+  antonyms: ["Galilean law of addition of speeds"],
+  context: "Even if two spacecraft move toward each other at speeds close to c, the Lorentz addition law ensures that neither observer measures the other exceeding the speed of light.",
+  full: "The relativistic rule for combining velocities in special relativity. If an object moves with speed u in one frame and that frame moves with speed v relative to another, the combined speed is given by u' = (u + v)/(1 + uv/c²). This ensures that no measured speed exceeds c."
+},
+{
+  term: "Moment of Inertia",
+  symbol: "I",
+  unit: "kg m²",
+  hl: true,
+  keywords: ["rotational inertia", "mass distribution", "resistance to angular acceleration"],
+  synonyms: ["rotational inertia"],
+  antonyms: ["linear mass"],
+  context: "A flywheel with more mass concentrated far from its axis has a larger moment of inertia and is harder to spin up or slow down.",
+  full: "The rotational analogue of mass. It measures how strongly an object resists angular acceleration about a given axis and depends on both the mass of the object and how that mass is distributed relative to the axis of rotation."
+},
+{
+  term: "Proper Length",
+  symbol: "L₀",
+  unit: "m",
+  hl: true,
+  keywords: ["rest frame", "maximum length", "relativity"],
+  synonyms: ["rest length"],
+  antonyms: ["contracted length"],
+  context: "The proper length of a spacecraft is measured by an observer at rest relative to the spacecraft, not by someone watching it fly by at high speed.",
+  full: "The length of an object measured in the inertial frame in which the object is at rest. It is the greatest length measured for that object and is used in calculations of relativistic length contraction."
+},
+{
+  term: "Proper Time",
+  symbol: "Δt₀",
+  unit: "s",
+  hl: true,
+  keywords: ["same location", "rest frame", "minimum time interval"],
+  synonyms: ["proper time interval", "eigentime"],
+  antonyms: ["dilated time"],
+  context: "A muon carries its own clock, so the time between its creation and decay measured in the muon's rest frame is the proper time.",
+  full: "The time interval between two events measured in the frame where the events occur at the same place. It is the shortest measured time interval between those two events and is central to time dilation."
+},
+{
+  term: "Relativity of Simultaneity",
+  symbol: "—",
+  unit: "—",
+  hl: true,
+  keywords: ["simultaneous in one frame", "not simultaneous in another", "special relativity"],
+  synonyms: ["frame-dependent simultaneity"],
+  antonyms: ["absolute simultaneity"],
+  context: "Two lightning strikes may be simultaneous for an observer standing midway between them on the ground, but not for an observer moving past on a train.",
+  full: "The principle in special relativity that whether two spatially separated events occur at the same time depends on the observer's inertial frame. Simultaneity is therefore not absolute."
+},
+{
+  term: "Simultaneous Events",
+  symbol: "—",
+  unit: "—",
+  hl: true,
+  keywords: ["same time", "reference frame", "relativity"],
+  synonyms: ["coincident in time"],
+  antonyms: ["separated in time"],
+  context: "Two events that occur at the same clock reading in one reference frame are simultaneous in that frame, though not necessarily in another moving frame.",
+  full: "Events that occur at the same time according to a particular observer or reference frame. In relativity, simultaneity depends on the frame of reference."
+},
+{
+  term: "Static Equilibrium",
+  symbol: "—",
+  unit: "—",
+  hl: false,
+  keywords: ["at rest", "zero resultant force", "zero resultant moment"],
+  synonyms: ["mechanical equilibrium at rest"],
+  antonyms: ["dynamic equilibrium"],
+  context: "A ball bearing falling through glycerol reaches a state where its weight is balanced by upthrust and viscous drag, so it moves with no further acceleration and may be treated as in equilibrium conditions.",
+  full: "A state in which an object remains at rest because both the resultant force and the resultant moment acting on it are zero. In practical force-balance problems, this idea is often used to analyse situations where all forces exactly balance."
+},
+{
+  term: "Stokes' Law",
+  symbol: "F = 6πηrv",
+  unit: "N",
+  hl: false,
+  keywords: ["viscous drag", "sphere in fluid", "glycerol"],
+  synonyms: ["viscous drag law"],
+  antonyms: ["inviscid flow"],
+  context: "A small ball bearing falling through glycerol experiences a viscous drag force described by Stokes' law, which increases with speed until terminal velocity is reached.",
+  full: "The law giving the viscous drag force on a small sphere moving slowly through a fluid: F = 6πηrv, where η is the viscosity of the fluid, r is the sphere's radius, and v is its speed relative to the fluid."
+},
+{
+  term: "Turning Moment",
+  symbol: "τ",
+  unit: "N m",
+  hl: true,
+  keywords: ["moment of force", "pivot", "rotation"],
+  synonyms: ["torque", "moment"],
+  antonyms: ["translational force"],
+  context: "Pushing a door near its hinge produces only a small turning moment, but pushing far from the hinge produces a much larger one.",
+  full: "The rotational effect of a force about a pivot or axis. It is equal to the force multiplied by the perpendicular distance from the pivot to the line of action of the force."
+},
+{
+  term: "Water Pressure at Depth",
+  symbol: "p = ρgh",
+  unit: "Pa",
+  hl: false,
+  keywords: ["fluid pressure", "depth", "hydrostatic pressure"],
+  synonyms: ["pressure in a liquid", "hydrostatic pressure"],
+  antonyms: ["surface pressure"],
+  context: "Divers feel greater pressure at greater depths because the weight of the water above them increases with depth.",
+  full: "The pressure due to a column of liquid at depth h below the surface, given by p = ρgh, where ρ is the liquid density and g is gravitational field strength. The deeper the point, the greater the pressure."
+},         
+  {
+    term: "Work Function",
+    symbol: "Φ",
+    unit: "J or eV",
+    hl: true,
+    keywords: ["minimum energy to eject electron", "threshold", "photoelectric effect", "threshold frequency"],
+    synonyms: ["extraction energy", "threshold energy"],
+    antonyms: ["max kinetic energy", "electron affinity"],
+    context: "Each metal has its own work function, which is the minimum photon energy needed to liberate an electron from its surface.",
+    full: "The minimum energy required to remove an electron from the surface of a metal. In the photoelectric effect it determines the threshold frequency through f₀ = Φ/h."
+  }
+];
+
+        // Always keep glossary alphabetized in the UI
+        TERMS.sort((a, b) => a.term.localeCompare(b.term));
+
+        const LEVEL_LABELS = ["Keywords · Synonyms · Antonyms", "Context sentence", "Full explanation"];
+        const LEVEL_COLORS = [GOLD, "#7ec8e3", "#a8d5a2"];
+
+        function App() {
+            const [filter, setFilter] = useState("all");
+            const [search, setSearch] = useState("");
+            const [idx, setIdx] = useState(0);
+            const [level, setLevel] = useState(0);
+            const [transitioning, setTransitioning] = useState(false);
+
+            const filtered = TERMS.filter(t => {
+                const matchFilter = filter === "all" || (filter === "hl" ? t.hl : !t.hl);
+                const s = search.toLowerCase();
+                return matchFilter && (!s || (t.term || '').toLowerCase().includes(s) || (t.keywords || []).some(k => k.toLowerCase().includes(s)));
+            });
+
+            const card = filtered[idx] || null;
+
+            const go = useCallback((dir) => {
+                if (transitioning || filtered.length === 0) return;
+                setTransitioning(true);
+                setTimeout(() => {
+                    setIdx(i => (i + dir + filtered.length) % filtered.length);
+                    setLevel(0);
+                    setTransitioning(false);
+                }, 180);
+            }, [transitioning, filtered.length]);
+
+            useEffect(() => {
+                const h = (e) => {
+                    if (e.key === "ArrowRight") go(1);
+                    if (e.key === "ArrowLeft") go(-1);
+                    if (e.key === "ArrowDown" && level < 2) setLevel(l => l + 1);
+                    if (e.key === "ArrowUp" && level > 0) setLevel(l => l - 1);
+                };
+                window.addEventListener("keydown", h);
+                return () => window.removeEventListener("keydown", h);
+            }, [go, level]);
+
+            useEffect(() => { setIdx(0); setLevel(0); }, [filter, search]);
+
+            return (
+                <div style={{minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", padding:24}}>
+                    <div style={{textAlign:"center", marginBottom:30}}>
+                        <div style={{fontFamily:"'Cormorant Garamond', serif", fontSize:"2rem", color:GOLD}}>IB Physics Glossary</div>
+                        <div style={{fontFamily:"'IBM Plex Mono', monospace", fontSize:"0.7rem", color:MUTED, textTransform:"uppercase"}}>Three-Level Flashcards · {filtered.length} Terms</div>
+                    </div>
+
+                    <div style={{display:"flex", gap:10, marginBottom:20, flexWrap:"wrap", justifyContent:"center"}}>
+                        {["all","sl","hl"].map(f => (
+                            <button key={f} onClick={() => setFilter(f)} style={{
+                                background: filter === f ? (f === "hl" ? HL_RED : GOLD) : SURFACE,
+                                color: filter === f ? BG : MUTED,
+                                border: "1px solid #1e2028", borderRadius:20, padding:"6px 16px", cursor:"pointer", textTransform:"uppercase", fontSize:"0.7rem"
+                            }}>{f}</button>
+                        ))}
+                        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search..." style={{background:SURFACE, border:`1px solid ${BORDER}`, color:TEXT, borderRadius:20, padding:"6px 14px", fontSize:"0.75rem", outline:"none", width:120}} />
+                    </div>
+
+                    {card ? (
+                        <div style={{width:"100%", maxWidth:600, opacity: transitioning ? 0 : 1, transition:"opacity 0.2s"}}>
+                            <div style={{background:SURFACE, border:`1px solid ${card.hl ? HL_RED : BORDER}`, borderRadius:16, overflow:"hidden"}}>
+                                <div style={{background: card.hl ? `${HL_RED}15` : "#0f1016", padding:24, textAlign:"center", borderBottom:`1px solid ${BORDER}`}}>
+                                    <div style={{fontFamily:"'Cormorant Garamond', serif", fontSize:"2.2rem", color:WHITE}}>{card.term} {card.hl && <span style={{fontSize:"0.7rem", background:HL_RED, color:WHITE, padding:"2px 6px", borderRadius:4, verticalAlign:"middle"}}>HL</span>}</div>
+                                    {card.symbol && <div style={{color:GOLD, fontStyle:"italic", marginTop:4}}>{card.symbol}{card.unit ? ` [${card.unit}]` : ''}</div>}
+                                </div>
+                                <div style={{display:"flex", borderBottom:`1px solid ${BORDER}`}}>
+                                    {[1,2,3].map((n, i) => (
+                                        <button key={n} onClick={() => setLevel(i)} style={{flex:1, padding:12, background: level === i ? `${LEVEL_COLORS[i]}20` : "transparent", color: level === i ? LEVEL_COLORS[i] : MUTED, border:"none", borderBottom: level === i ? `2px solid ${LEVEL_COLORS[i]}` : "2px solid transparent", cursor:"pointer", fontSize:"0.65rem", textTransform:"uppercase"}}>Level {n}</button>
+                                    ))}
+                                </div>
+                                <div style={{padding:30, minHeight:160, display:"flex", alignItems:"center", justifyContent:"center", textAlign:"center"}}>
+                                    {level === 0 && (
+                                        <div>
+                                            <div style={{display:"flex", flexWrap:"wrap", gap:8, justifyContent:"center", marginBottom:20}}>{(card.keywords || []).map(k => <span key={k} style={{border:`1px solid ${GOLD}50`, color:GOLD, padding:"3px 10px", borderRadius:15, fontSize:"0.75rem"}}>{k}</span>)}</div>
+                                            <div style={{display:"flex", gap:15, justifyContent:"center"}}><div style={{fontSize:"0.8rem"}}><span style={{color:MUTED}}>Syn:</span> {(card.synonyms || []).join(", ")}</div><div style={{fontSize:"0.8rem"}}><span style={{color:MUTED}}>Ant:</span> {(card.antonyms || []).join(", ")}</div></div>
+                                        </div>
+                                    )}
+                                    {level === 1 && <div style={{fontFamily:"'Cormorant Garamond', serif", fontSize:"1.4rem", fontStyle:"italic", color:WHITE}}>"{card.context}"</div>}
+                                    {level === 2 && <div style={{fontSize:"0.95rem", lineHeight:1.7, textAlign:"left"}}>{card.full}</div>}
+                                </div>
+                                <div style={{padding:15, background:"#0f1016", borderTop:`1px solid ${BORDER}`, display:"flex", justifyContent:"space-between"}}>
+                                    <button onClick={() => go(-1)} style={{background:"none", border:"none", color:MUTED, cursor:"pointer"}}>← Prev</button>
+                                    <div style={{color:GOLD, fontSize:"0.8rem"}}>{idx + 1} / {filtered.length}</div>
+                                    <button onClick={() => go(1)} style={{background:"none", border:"none", color:MUTED, cursor:"pointer"}}>Next →</button>
+                                </div>
+                            </div>
+                        </div>
+                    ) : <div style={{color:MUTED}}>No results.</div>}
+                    
+                    <div style={{marginTop:40, color:MUTED, fontSize:"0.6rem", letterSpacing:"0.1em", textTransform:"uppercase"}}>Constructed by Silicon · Architect Carbon · LeeMcCullochJames</div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
+
