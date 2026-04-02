@@ -49,6 +49,7 @@ button:hover { transform: translateY(-1px); border-color:#4a5365; }
   background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)), var(--surface);
   box-shadow: 0 18px 50px rgba(0,0,0,.28); overflow:hidden; user-select:none;
   touch-action: pan-y;
+  cursor: pointer;
 }
 .card-inner {
   position:relative; width:100%; min-height:420px; transition: transform .55s ease;
@@ -58,6 +59,9 @@ button:hover { transform: translateY(-1px); border-color:#4a5365; }
 .face {
   position:absolute; inset:0; backface-visibility:hidden; display:flex; flex-direction:column;
   padding:20px 22px 24px;
+}
+.face, .face * {
+  pointer-events: none;
 }
 .back { transform: rotateY(180deg); }
 .toprow {
@@ -2387,44 +2391,28 @@ el.resetBtn.addEventListener('click', resetAll);
 
 let startX = 0;
 let startY = 0;
-let moved = false;
+let pointerMoved = false;
 
-el.card.addEventListener('touchstart', e => {
-  const t = e.changedTouches[0];
-  startX = t.clientX;
-  startY = t.clientY;
-  moved = false;
-}, {passive:true});
-
-el.card.addEventListener('touchmove', e => {
-  moved = true;
-}, {passive:true});
-
-el.card.addEventListener('touchend', e => {
-  const t = e.changedTouches[0];
-  const dx = t.clientX - startX;
-  const dy = t.clientY - startY;
-  if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy)) {
-    if (dx < 0) nextCard(); else prevCard();
-  } else if (!moved || (Math.abs(dx) < 10 && Math.abs(dy) < 10)) {
-    flipCard();
-  }
-}, {passive:true});
-
-let mouseDown = false;
-el.card.addEventListener('mousedown', e => {
-  mouseDown = true;
+el.card.addEventListener('pointerdown', e => {
   startX = e.clientX;
   startY = e.clientY;
+  pointerMoved = false;
 });
-window.addEventListener('mouseup', e => {
-  if (!mouseDown) return;
-  mouseDown = false;
+
+el.card.addEventListener('pointermove', e => {
+  if (Math.abs(e.clientX - startX) > 8 || Math.abs(e.clientY - startY) > 8) {
+    pointerMoved = true;
+  }
+});
+
+el.card.addEventListener('pointerup', e => {
   const dx = e.clientX - startX;
   const dy = e.clientY - startY;
-  if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy)) {
-    if (dx < 0) nextCard(); else prevCard();
-  } else {
+
+  if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy)) {
+    if (dx < 0) nextCard();
+    else prevCard();
+  } else if (!pointerMoved || (Math.abs(dx) < 10 && Math.abs(dy) < 10)) {
     flipCard();
   }
 });
