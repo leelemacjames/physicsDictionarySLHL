@@ -2223,6 +2223,26 @@ function setMathHTML(element, raw, display=false) {
   element.innerHTML = `<span class="math-${display ? 'display' : 'inline'}">${toTeX(raw, display)}</span>`;
 }
 
+function toUnitsTeX(raw) {
+  let s = String(raw || '').trim();
+  if (!s) return '';
+  s = texifyUnits(s);
+  s = s.replace(/same units as /g, '\\text{same units as }');
+  s = s.replace(/dimensionless/g, '\\text{dimensionless}');
+  s = s.replace(/ if /g, ' \\text{ if } ');
+  s = s.replace(/ are in /g, ' \\text{ are in } ');
+  s = s.replace(/ is in /g, ' \\text{ is in } ');
+  s = s.replace(/ in /g, ' \\text{ in } ');
+  s = s.replace(/ where /g, ' \\text{ where } ');
+  s = s.replace(/, /g, ',\\,');
+  s = s.replace(/\s+/g, ' ').trim();
+  return `\\(${s}\\)`;
+}
+
+function setUnitsHTML(element, raw) {
+  element.innerHTML = `<span class="math-inline">${toUnitsTeX(raw)}</span>`;
+}
+
 function typesetIfNeeded() {
   if (window.MathJax && MathJax.typesetPromise) {
     const targets = [document.getElementById('prompt'), document.getElementById('answer'), document.getElementById('units'), document.getElementById('notes')].filter(Boolean);
@@ -2256,7 +2276,7 @@ function render() {
   el.countPill.textContent = `${filtered.length} cards active from ${ALL_CARDS.length} total`;
 
   if (card.units) {
-    setMathHTML(el.units, card.units);
+    setUnitsHTML(el.units, card.units);
     el.unitsBox.style.display = 'block';
   } else {
     el.unitsBox.style.display = 'none';
