@@ -2244,6 +2244,15 @@ function render() {
     return;
   }
 
+  if (window.MathJax) {
+  const targets = [
+    document.getElementById("card-content"),
+    document.getElementById("card-units")
+  ];
+  MathJax.typesetClear(targets);
+  MathJax.typesetPromise(targets).catch(console.error);
+  }
+
   const card = filtered[current];
   el.prompt.textContent = card.prompt;
   setMathHTML(el.answer, card.answer, true);
